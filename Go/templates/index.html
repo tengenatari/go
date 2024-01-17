@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+
+
+{%block style %}
+<link rel="stylesheet" href="/static/css/index.css">
+{% endblock %}
+
+
+{% block body %}
+   <div class="main">
+     <div class="Welcome">
+       <h4>Добро пожаловать в<span> "Го-в-го"</span>⚪</h4>
+
+   </div>
+   <img src="/static/image/utmnclub.jpg" alt="">
+
+     <p class="title"> Студенческий клуб в ТюмГУ</p>
+     <p class = "subtitle"> Общаемся, учимся, играем</p>
+
+
+   </div>
+   <div class="ournetworks">
+        <a class="itemnet" href = "https://vk.com/go_utmn" target="_blank">
+          <div class="icon">
+              <i class='bx bxl-vk'></i>
+          </div>
+          <div class="info">
+            <h3>VK</h3>
+            <p>Наше сообщество</p>
+          </div>
+          <i class='bx bx-chevron-right'></i>
+        </a>
+
+        <a class="itemnet" href = "https://t.me/+fOGPCDDVFSFhMjIy" target="_blank">
+          <div class="icon">
+            <i class='bx bxl-telegram' ></i>
+          </div>
+          <div class="info">
+            <h3>Telegram</h3>
+            <p>Наш чат</p>
+          </div>
+          <i class='bx bx-chevron-right'></i>
+        </a>
+        <a class="itemnet" href = "https://online-go.com/group/12548" target="_blank">
+          <div class="icon">
+            <i class='bx bxs-bullseye'></i>
+          </div>
+          <div class="info">
+            <h3>OGS</h3>
+            <p>Наша группа</p>
+          </div>
+          <i class='bx bx-chevron-right'></i>
+        </a>
+   </div>
+{% endblock %}

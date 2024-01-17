@@ -1,0 +1,119 @@
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+
+}
+
+.navbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  padding: 0 50px;
+
+}
+
+.navbar h2{
+  color: #42aaff;
+  font-weight: 600;
+  font-size: 30px;
+}
+.navbar ul{
+  display:flex;
+}
+.navbar ul li{
+  list-style:none;
+}
+.navbar ul li a{
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+  margin-left: 30px;
+  transition: color 0.3s ease;
+}
+
+.navbar ul li:hover a{
+  color: #42aaff;
+}
+
+
+.btn{
+  background: #42aaff;
+  padding: 8px 20px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+
+}
+
+.btn:hover{
+  background:#0f93ff;
+}
+
+
+body{
+  height: 100vh;
+  background: #212529;
+}
+
+.main{
+  height:  100px;
+  display: flex;
+  flex-direction:row;
+  align-items: center;
+  justify-content: center;
+
+}
+.main h3{
+  font-size: 32px;
+  color: #ddd;
+  font-weight: 600;
+
+}
+.main span{
+  color: #42aaff;
+
+}
+.Table{
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  flex-wrap: nowrap;
+	width: 100%;
+  border-radius: 2px;
+	border-collapse: collapse;
+  padding: 10px;
+
+}
+.Table tr{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  border: 2px solid #42aaff;
+  border-radius: 10px;
+  height: 120px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.Table td{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  border: 2px solid #ddd;
+  border-radius: 10%;
+  padding: 10px 10px;
+  width: 100px;
+  height: 100px;
+  text-decoration: none;
+  color: #ddd;
+  margin-left: 10px;
+  margin-right: 10px;
+}
