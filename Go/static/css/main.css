@@ -20,7 +20,7 @@ body{
   align-items: center;
   justify-content: space-between;
   height: 80px;
-  padding: 0 50px;
+  padding: 0 70px;
 
 }
 
@@ -65,4 +65,51 @@ body{
 
 .btn:hover{
   background:#0f93ff;
+}
+
+
+
+.dropbtn {
+    background-color: #292b2e;
+    color: #292b2e;
+    padding: 15px 10px;
+    font-size: 16px;
+    border: 2px solid #42aaff;
+    border-radius: 5px;
+    transition: background-color ease 0.3s;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 10px 10px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #fff;
 }

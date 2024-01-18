@@ -22,20 +22,15 @@
        <li><a href="/">Игры</a></li>
        <li><a href="/">Информация</a></li>
      </ul>
-     {% if current_user.is_authenticated %}
-      <div class="dropdown">
-        <button class="dropbtn">{{current_user.get_user().name}}</button>
+     <div class="dropdown">
+        <button class="dropbtn">{{current_user.get_id()}}</button>
         <div class="dropdown-content">
           <a href="/profile">Профиль</a>
           <a href="/games">Партии</a>
           <a href="/logout">Выйти</a>
         </div>
      </div>
-     {% else %}
-       <label><a class="btn" href="/authpage">Войти</a>
-         <a class="btn" href="/register">Регистрация</a></label>
-     {% endif %}
-   </div>
+     </div>
    {% block body %}{% endblock %}
   </body>
 

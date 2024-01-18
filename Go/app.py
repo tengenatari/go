@@ -15,7 +15,7 @@ login_manager = LoginManager(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return UserLogin().create_from_db(User=User.query.filter(User.id == user_id).first())
+    return UserLogin().create(User.query.filter(User.id == user_id).first())
 
 
 def check_on_repeat(table, column, value, text):
@@ -25,8 +25,7 @@ def check_on_repeat(table, column, value, text):
     return False
 
 
-
-Player = db.Table('Player', db.Column('ID', db.Integer, primary_key=True),
+Player = db.Table('Player', db.Column('id', db.Integer, primary_key=True),
                   db.Column("user", db.Integer, db.ForeignKey('user.id')),
                   db.Column("group", db.Integer, db.ForeignKey('group.id')))
 
@@ -71,8 +70,8 @@ class Game(db.Model):
     result = db.Column(db.Boolean, default=None)
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
-    first_player = db.Column(db.Integer, db.ForeignKey('player.id', ))
-    second_player = db.Column(db.Integer, db.ForeignKey('player.id'))
+    first_player = db.Column(db.Integer, db.ForeignKey('Player.id', ))
+    second_player = db.Column(db.Integer, db.ForeignKey('Player.id'))
 
 
 @app.route('/')
@@ -102,9 +101,10 @@ def authorization():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(name=username).first()
+        print(user)
         if check_password_hash(user.password, password):
             userlogin = UserLogin().create(user)
-            login_user(user, userlogin)
+            login_user(userlogin)
             flash('Logged in successfully!', 'error-msg')
     return render_template('authpage.html')
 

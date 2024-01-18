@@ -1,10 +1,6 @@
 
 
 class UserLogin():
-    def create_from_db(self, User):
-        self.__user = User
-        return self
-
 
     def create(self, user):
         self.__user = user
@@ -25,4 +21,7 @@ class UserLogin():
 
     def get_id(self):
         return str(self.__user.id)
+
+    def get_user(self):
+        return self.__user
 
