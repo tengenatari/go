@@ -1,9 +1,10 @@
 from datetime import datetime
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from UserLogin import UserLogin
+from checker import check_form
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'c3b9f846dc80fec3c879218547d1c93843bf1140c5c99e8812550819509fa78fc41d93799fe12370'
@@ -18,11 +19,6 @@ def load_user(user_id):
     return UserLogin().create(User.query.filter(User.id == user_id).first())
 
 
-def check_on_repeat(table, column, value, text):
-    if table.query.filter(column == value).count() > 0:
-        flash(text, category='error-msg')
-        return True
-    return False
 
 
 Player = db.Table('Player', db.Column('id', db.Integer, primary_key=True),
@@ -79,13 +75,19 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/authpage')
+
+
 @app.route('/groups')
 def groups():
     return render_template('groups.html')
 
 
 @app.route('/members')
-@login_required
 def members():
     return render_template("/members.html")
 
@@ -105,39 +107,31 @@ def authorization():
         if check_password_hash(user.password, password):
             userlogin = UserLogin().create(user)
             login_user(userlogin)
-            flash('Logged in successfully!', 'error-msg')
+            return redirect('/')
     return render_template('authpage.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        is_registered = True
-        if len(request.form['username']) < 4:
-            flash("Имя пользователя должно быть не менее 5 символов", category='error-msg')
-            is_registered = False
-        if len(request.form['password']) < 7:
-            flash("Пароль должен быть не менее 8 символов", category='error-msg')
-            is_registered = False
-        if check_on_repeat(User, User.name, request.form['username'], 'Пользователь с таким именем уже зарегистрирован' ):
-            is_registered = False
-        if check_on_repeat(User, User.email, request.form['email'], 'Пользователь с такой почтой уже зарегистрирован'):
-            is_registered = False
-        if 'utmn.ru' not in request.form['email']:
-            flash(message="Неверный формат почты, домен должен быть в формате utmn.ru", category='error-msg')
-            is_registered = False
-        if request.form['password'] != request.form['password-validation']:
-            flash(message="Пароли не совпадают", category='error-msg')
-            is_registered = False
-        if is_registered:
-            name = request.form['username']
-            password = generate_password_hash(request.form['password'])
-            email = request.form['email']
+
+        name = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        password_2 = request.form['password-validation']
+
+        if check_form(name, email, password, password_2, User):
+
+            password = generate_password_hash(password)
 
             user = User(name=name, password=password, email=email)
 
             db.session.add(user)
             db.session.commit()
+
+            flash('Вы успешно зарегистрированы! :)', category='success-msg')
+
+            return redirect('/authpage')
 
     return render_template("register.html")
 
