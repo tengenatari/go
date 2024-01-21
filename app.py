@@ -55,7 +55,7 @@ class Group(db.Model):
     name = db.Column(db.String)
     season = db.Column(db.Integer, db.ForeignKey('season.id'))
 
-    players = db.relationship('User', secondary='Player', backref='group', lazy='dynamic')
+    players = db.relationship('User', secondary=Player, backref='group', lazy='dynamic')
 
 
 class Game(db.Model):
