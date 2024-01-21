@@ -5,7 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="/static/css/main.css">
+    {% if current_user.is_authenticated %}
+      <link rel="stylesheet" href="/static/css/main_auth.css">
+    {% else %}
+      <link rel="stylesheet" href="/static/css/main.css">
+    {% endif %}
     {% block style %}{% endblock%}
     <link rel="shortcut icon" href="/static/image/utmn.png">
     <title>Let's go play go</title>
@@ -21,9 +25,9 @@
        <li><a href="/members">Участники</a></li>
        <li><a href="/">Игры</a></li>
        <li><a href="/">Информация</a></li>
-     </ul>
+
      {% if current_user.is_authenticated %}
-     <label>
+     </ul>
      <div class="dropdown">
         <button class="dropbtn">{{current_user.get_user().name}}</button>
         <div class="dropdown-content">
@@ -32,16 +36,9 @@
           <a href="/logout">Выйти</a>
         </div>
      </div>
-      <div class="dropdown">
-        <button class="dropbtn">{{current_user.get_user().name}}</button>
-        <div class="dropdown-content">
-          <a href="/profile">Профиль</a>
-          <a href="/games">Партии</a>
-          <a href="/logout">Выйти</a>
-        </div>
      </div>
-     </label>
      {% else %}
+       </ul>
        <label><a class="btn" href="/authpage">Войти</a>
          <a class="btn" href="/register">Регистрация</a></label>
      {% endif %}

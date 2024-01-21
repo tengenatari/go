@@ -21,8 +21,9 @@ body{
   justify-content: space-between;
   height: 80px;
   padding: 0 70px;
-
+  margin-left: 110px;
 }
+
 
 .navbar h2{
   color: #42aaff;
@@ -30,7 +31,7 @@ body{
   font-size: 30px;
 }
 .navbar ul{
-  margin-left: 7.5%;
+
   display:flex;
 }
 .navbar ul li{
@@ -46,7 +47,9 @@ body{
   margin-left: 30px;
   transition: color 0.3s ease;
 }
-
+.navbar ul li:last-child{
+  margin-right: 30px;
+}
 .navbar ul li:hover a{
   color: #42aaff;
 }
@@ -74,10 +77,11 @@ body{
 .dropbtn {
     background-color: #292b2e;
     color: #ddd;
-    padding: 15px 30px;
+    padding: 20px 10px;
     font-size: 16px;
     border: 2px solid #42aaff;
     border-radius: 5px;
+    width: 180px;
     transition: border-color ease 0.3s;
 }
 
