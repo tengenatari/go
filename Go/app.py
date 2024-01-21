@@ -19,8 +19,6 @@ def load_user(user_id):
     return UserLogin().create(User.query.filter(User.id == user_id).first())
 
 
-
-
 Player = db.Table('Player', db.Column('id', db.Integer, primary_key=True),
                   db.Column("user", db.Integer, db.ForeignKey('user.id')),
                   db.Column("group", db.Integer, db.ForeignKey('group.id')))
@@ -81,11 +79,14 @@ def logout():
     logout_user()
     return redirect('/authpage')
 
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    return render_template('profile.html')
 
 @app.route('/groups')
 def groups():
     return render_template('groups.html')
-
 
 @app.route('/members')
 def members():
@@ -103,11 +104,12 @@ def authorization():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(name=username).first()
-        print(user)
-        if check_password_hash(user.password, password):
+        if user and check_password_hash(user.password, password):
             userlogin = UserLogin().create(user)
             login_user(userlogin)
             return redirect('/')
+        else:
+            flash('Неверное имя пользователя или пароль', 'error-msg')
     return render_template('authpage.html')
 
 
