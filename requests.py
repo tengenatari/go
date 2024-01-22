@@ -1,6 +1,6 @@
 from app import app, db
 from app import Rule, User, Player, Group, Game, Season
-#from sqlalchemy import text
+from sqlalchemy import func, case, literal_column
 #from sqlalchemy import delete
 from UserLogin import UserLogin
 
@@ -8,42 +8,47 @@ from UserLogin import UserLogin
 # Select requests #
 # --------------- #
     
-def select_active_season() -> Season:
+def select_active_season():
+    # Возвращает текущий сезон
     return db.session.query(Season).filter(Season.is_active == True).first()
     
-def select_active_groups() -> list:
+def select_seasons():
+    # Возвращает список всех существующих сезонов
+    return db.session.query(Season).all()
+
+def select_active_groups():
+    # Возвращает список групп в текущем сезоне
     return db.session.query(Group).join(Season, (Group.season == Season.id) 
                                         & Season.is_active,
                                         isouter = False).all()
 
-def select_users_data() -> list:
-    # print(db.session.query(User.id,
-    #                         User.name,
-    #                         Player.c.id,
-    #                         Group.id,
-    #                         Group.name
-    #                         ).join(Player, 
-    #                                Player.c.user == User.id,
-    #                                isouter = True 
-    #                         ).join(Group,
-    #                                Group.id == Player.c.group,
-    #                                isouter = True
-    #                         ).join(Season,
-    #                                (Season.id == Group.season)
-    #                                & Season.is_active
-    #                                & User.is_valid,
-    #                                isouter = False
-    #                         ).join(Game,
-    #                                (Game.first_player == Player.c.id)
-    #                                | (Game.second_player == Player.c.id),
-    #                                isouter = True
-    #                         ))
+def select_groups_in_season(season_id: int):
+    # Возвращает список групп в заданном сезоне
+    return db.session.query(Group).filter(Group.season == season_id).all()
+
+def select_users_data(max_games_value=10) -> list:
+    
+    # [0]: User_id
+    # [1]: User_name
+    # [2]: Player_id
+    # [3]: Group_id
+    # [4]: Group_name
+    # [5]: Количество игр в текущем сезоне
+    # [6]: Победы в текущем сезоне
+    # [6]: Коэффициент побед
+
     return db.session.query(User.id,
                             User.name,
-                            Player.c.id,
+                            Player.c.id.label("player1"),
                             Group.id,
                             Group.name,
-                            Game.id
+                            func.count(Game.id), 
+                            func.sum(case(
+                                (Game.result == (Game.first_player == Player.c.id), 1),
+                                else_ = 0)),   
+                            func.sum(case(
+                                (Game.result == (Game.first_player == Player.c.id), 1),
+                                else_ = 0)) / func.max(func.count(Game.id), max_games_value)
                             ).join(Player, 
                                    Player.c.user == User.id,
                                    isouter = True 
@@ -58,8 +63,16 @@ def select_users_data() -> list:
                             ).join(Game,
                                    (Game.first_player == Player.c.id)
                                    | (Game.second_player == Player.c.id),
-                                   isouter = True
+                                   isouter = True        
+                            ).group_by(
+                                User.id,
+                                User.name,
+                                Player.c.id,
+                                Group.id,
+                                Group.name
+                            ).order_by(
                             ).all()
+
 # ------------------ #
 # Insert test values #
 # ------------------ #
@@ -146,6 +159,40 @@ def Insert_test_values():
                 j.players.add(i)
             db.session.commit()
             p = j.players.all()
+    
+    g = Game(
+        is_accepted   = True,
+        result        = True,
+        first_player  = 16,
+        second_player = 17
+    )
+    db.session.add(g)
+    
+    g = Game(
+        is_accepted   = True,
+        result        = True,
+        first_player  = 18,
+        second_player = 17
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted   = True,
+        result        = True,
+        first_player  = 16,
+        second_player = 19
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted   = True,
+        result        = False,
+        first_player  = 17,
+        second_player = 20
+    )
+    db.session.add(g)
+
+    db.session.commit()
 
 def main():    
     app.app_context().push()
