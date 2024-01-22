@@ -94,8 +94,8 @@
 .success-msg{
     width: 30%;
     height: 5%;
-    border: 2px solid #FF4040;
-    background: rgba(0,255, 0.2);
+    border: 2px solid #138808;
+    background: rgba(19, 136, 8, 0.2);
     border-radius: 10px;
     justify-content: center;
     display: flex ;

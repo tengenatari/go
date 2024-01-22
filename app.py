@@ -18,9 +18,8 @@ login_manager = LoginManager(app)
 def load_user(user_id):
     return UserLogin().create(User.query.filter(User.id == user_id).first())
 
-
 Player = db.Table('Player', db.Column('id', db.Integer, primary_key=True),
-                  db.Column("us er", db.Integer, db.ForeignKey('user.id')),
+                  db.Column("user", db.Integer, db.ForeignKey('user.id')),
                   db.Column("group", db.Integer, db.ForeignKey('group.id')))
 
 
@@ -90,7 +89,7 @@ def groups():
 
 @app.route('/members')
 def members():
-    return render_template("/members.html")
+    return render_template("/members.html", members=User.query.all())
 
 
 @app.route('/table.html')

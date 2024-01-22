@@ -1,9 +1,30 @@
 {% extends "main.html" %}
 {% block style %}
 <link rel="stylesheet" href="/static/css/members.css">
+
 {% endblock %}
 {% block body %}
 
+<table class="Table">
+    <tbody>
+        <tr>
+            <td> Имя пользователя </td>
+            <td> Счет за все время </td>
+            <td> Счет за текущий сезон </td>
+            <td> Группа </td>
+            <td> Место в группе </td>
+        </tr>
+        {% for member in members %}
+        <tr>
+            <td>{{member.name}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    <tbody>
+</table>
 
 
 {% endblock %}

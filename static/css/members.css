@@ -1,0 +1,40 @@
+
+.Table{
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  flex-wrap: nowrap;
+	width: 100%;
+  border-radius: 2px;
+	border-collapse: collapse;
+  padding: 10px;
+
+}
+
+.Table tr{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  border-radius: 10px;
+  height: 120px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.Table td{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  border: 1px solid #b8b8b8;
+  border-radius: 10px;
+  padding: 10px 10px;
+  width: 200px;
+  height: 100px;
+  text-decoration: none;
+  color: #ddd;
+  margin-right: 2px;
+  margin-left: 2px;
+}
