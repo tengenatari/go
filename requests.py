@@ -1,6 +1,7 @@
 from app import app, db
 from app import Rule, User, Player, Group, Game, Season
-from sqlalchemy import func, case, literal_column
+from sqlalchemy import func, case, desc
+from sqlalchemy.sql.functions import coalesce
 #from sqlalchemy import delete
 from UserLogin import UserLogin
 
@@ -35,11 +36,11 @@ def select_users_data(max_games_value=10) -> list:
     # [4]: Group_name
     # [5]: Количество игр в текущем сезоне
     # [6]: Победы в текущем сезоне
-    # [6]: Коэффициент побед
+    # [6]: Коэффициент побед в текущем сезоне Decimal('0E-10') или например Decimal('0.1000000000')
 
     return db.session.query(User.id,
                             User.name,
-                            Player.c.id.label("player1"),
+                            Player.c.id,
                             Group.id,
                             Group.name,
                             func.count(Game.id), 
@@ -50,15 +51,15 @@ def select_users_data(max_games_value=10) -> list:
                                 (Game.result == (Game.first_player == Player.c.id), 1),
                                 else_ = 0)) / func.max(func.count(Game.id), max_games_value)
                             ).join(Player, 
-                                   Player.c.user == User.id,
-                                   isouter = True 
+                                   (Player.c.user == User.id)
+                                   & User.is_valid,
+                                   isouter = False 
                             ).join(Group,
                                    Group.id == Player.c.group,
-                                   isouter = True
+                                   isouter = False
                             ).join(Season,
                                    (Season.id == Group.season)
-                                   & Season.is_active
-                                   & User.is_valid,
+                                   & Season.is_active,
                                    isouter = False
                             ).join(Game,
                                    (Game.first_player == Player.c.id)
@@ -71,6 +72,11 @@ def select_users_data(max_games_value=10) -> list:
                                 Group.id,
                                 Group.name
                             ).order_by(
+                                desc(
+                                    func.sum(case(
+                                    (Game.result == (Game.first_player == Player.c.id), 1),
+                                    else_ = 0)) / func.max(func.count(Game.id), max_games_value)
+                                )
                             ).all()
 
 # ------------------ #
