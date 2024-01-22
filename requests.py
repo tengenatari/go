@@ -17,11 +17,33 @@ def select_active_groups() -> list:
                                         isouter = False).all()
 
 def select_users_data() -> list:
+    # print(db.session.query(User.id,
+    #                         User.name,
+    #                         Player.c.id,
+    #                         Group.id,
+    #                         Group.name
+    #                         ).join(Player, 
+    #                                Player.c.user == User.id,
+    #                                isouter = True 
+    #                         ).join(Group,
+    #                                Group.id == Player.c.group,
+    #                                isouter = True
+    #                         ).join(Season,
+    #                                (Season.id == Group.season)
+    #                                & Season.is_active
+    #                                & User.is_valid,
+    #                                isouter = False
+    #                         ).join(Game,
+    #                                (Game.first_player == Player.c.id)
+    #                                | (Game.second_player == Player.c.id),
+    #                                isouter = True
+    #                         ))
     return db.session.query(User.id,
                             User.name,
                             Player.c.id,
                             Group.id,
-                            Group.name
+                            Group.name,
+                            Game.id
                             ).join(Player, 
                                    Player.c.user == User.id,
                                    isouter = True 
@@ -34,8 +56,8 @@ def select_users_data() -> list:
                                    & User.is_valid,
                                    isouter = False
                             ).join(Game,
-                                   (Game.first_player == Player.id)
-                                   | (Game.second_player_player == Player.id)
+                                   (Game.first_player == Player.c.id)
+                                   | (Game.second_player == Player.c.id),
                                    isouter = True
                             ).all()
 # ------------------ #
