@@ -20,7 +20,7 @@ def load_user(user_id):
 
 
 Player = db.Table('Player', db.Column('id', db.Integer, primary_key=True),
-                  db.Column("us er", db.Integer, db.ForeignKey('user.id')),
+                  db.Column("user", db.Integer, db.ForeignKey('user.id')),
                   db.Column("group", db.Integer, db.ForeignKey('group.id')))
 
 
@@ -55,7 +55,7 @@ class Group(db.Model):
     name = db.Column(db.String)
     season = db.Column(db.Integer, db.ForeignKey('season.id'))
 
-    players = db.relationship('User', secondary='Player', backref='group', lazy='dynamic')
+    players = db.relationship('User', secondary=Player, backref='group', lazy='dynamic')
 
 
 class Game(db.Model):
