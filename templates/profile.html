@@ -5,5 +5,38 @@
 {% endblock %}
 
 {% block body %}
+<div class="main">
+
+    <div class="user-block">
+        <h4>{{current_user.get_user().name}}</h4>
+        <div class="user-info-block">
+            <div class="text"><span>Почта:</span></div>
+            <div class="text"> {{current_user.get_user().email}}</div>
+        </div>
+        <div class="user-info-block">
+            <div class="text"> <span>Дата регистрации:</span> </div>
+            <div class="text"> {{current_user.get_user().registered_on.date()}} </div>
+        </div>
+        <div class="user-info-block">
+            <div class="text"><span>Верификация:</span>    {%if current_user.get_user().is_valid%}
+            Почта подтверждена {% else %}</div> <form action="/profile/ver"><button type="submit">Подтвердить почту</button></form>{% endif %}
+        </div>
+        <div class="user-info-block">
+            <div class="text"><span>Группа:</span></div>
+            <div class="text"><span>Отсутствует</span></div>
+        </div>
+        <div class="user-info-block">
+            <div class="text"><span>Группа:</span></div>
+            <div class="text"><span>Отсутствует</span></div>
+        </div>
+        <div class="user-info-block">
+            <div class="text"><span>Группа:</span></div>
+            <div class="text"><span>Отсутствует</span></div>
+        </div>
+
+    </div>
+
+
+</div>
 
 {% endblock %}

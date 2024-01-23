@@ -23,8 +23,8 @@
        <li><a href="/">Главная</a></li>
        <li><a href="/groups">Группы</a></li>
        <li><a href="/members">Участники</a></li>
-       <li><a href="/">Игры</a></li>
-       <li><a href="/">Информация</a></li>
+       <li><a href="/games">Игры</a></li>
+       <li><a href="/about">Информация</a></li>
 
      {% if current_user.is_authenticated %}
      </ul>
@@ -32,7 +32,7 @@
         <button class="dropbtn">{{current_user.get_user().name}}</button>
         <div class="dropdown-content">
           <a href="/profile">Профиль</a>
-          <a href="/games">Партии</a>
+          <a href="/profile/games">Партии</a>
           <a href="/logout">Выйти</a>
         </div>
      </div>

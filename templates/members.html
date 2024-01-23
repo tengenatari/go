@@ -12,15 +12,15 @@
             <td> Счет за все время </td>
             <td> Счет за текущий сезон </td>
             <td> Группа </td>
-            <td> Место в группе </td>
+            <td> Очки </td>
         </tr>
         {% for member in members %}
         <tr>
-            <td>{{member.name}}</td>
+            <td>{{member[1]}}</td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>{{member[6]}} : {{member[5] - member[6]}}</td>
+            <td>{{member[4]}}</td>
+            <td>{{"%0.1f" % (member[7]*100)}}</td>
         </tr>
         {% endfor %}
     <tbody>

@@ -5,6 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from UserLogin import UserLogin
 from checker import check_form
+from main_request import *
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'c3b9f846dc80fec3c879218547d1c93843bf1140c5c99e8812550819509fa78fc41d93799fe12370'
@@ -17,6 +19,7 @@ login_manager = LoginManager(app)
 @login_manager.user_loader
 def load_user(user_id):
     return UserLogin().create(User.query.filter(User.id == user_id).first())
+
 
 Player = db.Table('Player', db.Column('id', db.Integer, primary_key=True),
                   db.Column("user", db.Integer, db.ForeignKey('user.id')),
@@ -36,6 +39,7 @@ class User(db.Model):
     password = db.Column(db.String)
     email = db.Column(db.String(120), unique=True)
     is_valid = db.Column(db.Boolean, default=False)
+
     rule = db.Column(db.Integer, db.ForeignKey('rule.id'), default=None)
     registered_on = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -58,6 +62,7 @@ class Group(db.Model):
 
 
 class Game(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     is_accepted = db.Column(db.Boolean, default=False)
     result = db.Column(db.Boolean, default=None)
@@ -78,18 +83,37 @@ def logout():
     logout_user()
     return redirect('/authpage')
 
+
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     return render_template('profile.html')
 
+@app.route('/profile/games')
+@login_required
+def profile_games():
+    return render_template('profile_games.html')
+
+
 @app.route('/groups')
 def groups():
     return render_template('groups.html')
 
+
+@app.route('/games')
+def view_games():
+    return render_template('games.html')
+
+
+@app.route('/about')
+def games():
+    return render_template('about.html')
+
+
 @app.route('/members')
 def members():
-    return render_template("/members.html", members=User.query.all())
+    members = select_users_data(db, Rule, User, Player, Group, Game, Season)
+    return render_template("/members.html", members=members)
 
 
 @app.route('/table.html')
