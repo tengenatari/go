@@ -8,18 +8,18 @@
 <table class="Table">
     <tbody>
         <tr>
-            <td> Имя пользователя </td>
-            <td> Счет за все время </td>
-            <td> Счет за текущий сезон </td>
-            <td> Группа </td>
-            <td> Очки </td>
+            <td class="header"><p class='title'><span>Имя пользователя</span></p> </td>
+            <td class="header"> <p class='title'><span>Счет за все время</span></p> </td>
+            <td class="header"> <p class='title'><span>Счет за текущий сезон</span></p> </td>
+            <td class="header"> <p class='title'><span>Группа</span></p> </td>
+            <td class="header"> <p class='title'><span>Очки</span></p> </td>
         </tr>
         {% for member in members %}
         <tr>
             <td>{{member[1]}}</td>
             <td></td>
             <td>{{member[6]}} : {{member[5] - member[6]}}</td>
-            <td>{{member[4]}}</td>
+            <td><p class = {{member[4]}}><span>{{member[4]}}</span></p></td>
             <td>{{"%0.1f" % (member[7]*100)}}</td>
         </tr>
         {% endfor %}

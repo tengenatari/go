@@ -12,7 +12,15 @@
 }
 
 
-
+.S span{
+    color: gold;
+}
+.A span{
+  color: silver;
+}
+.B span{
+  color: coral;
+}
 .Table tr{
   display: flex;
   justify-content: center;

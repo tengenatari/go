@@ -1,7 +1,8 @@
 
-from sqlalchemy import func, case, desc
+from sqlalchemy import func, case, desc, BinaryExpression
 from sqlalchemy.sql.functions import coalesce
-from sqlalchemy import func, case, literal_column
+from sqlalchemy.sql import bindparam
+from sqlalchemy.orm import aliased
 #from sqlalchemy import delete
 from UserLogin import UserLogin
 
@@ -79,4 +80,121 @@ def select_users_data(db, Rule, User, Player, Group, Game, Season, max_games_val
     ).all()
 
 
+def select_accepted_games(db, Rule, User, Game, Player, Season, Group, finished=True, user_id=0):
+    # Возвращает список кортежей с партиями. Партии принятые, где оба игрока находятся в одной группе.
+    # Если параметр user_id заполнен (!= 0), то информация выводится только по одному пользователю.
+    # Если параметр finished отвечает за то, требуется нам отобрать активные партии или завершённые.
 
+    # [0]: Game_id
+    # [1]: Group_id
+    # [2]: Game.result
+
+    # [3]: first_player.id
+    # [4]: first_user.id
+    # [5]: first_user.name
+
+    # [6]: second_player.id
+    # [7]: second_user.id
+    # [8]: second_user.name
+
+    f_Player = aliased(Player)
+    s_Player = aliased(Player)
+    f_User = aliased(User)
+    s_User = aliased(User)
+
+    return db.session.query(Game.id,
+                            f_Player.c.group,
+                            Game.result,
+                            Game.first_player,
+                            f_User.id,
+                            f_User.name,
+                            Game.second_player,
+                            s_User.id,
+                            s_User.name
+                            ).join(f_Player,
+                                   (f_Player.c.id == Game.first_player)
+                                   & Game.is_accepted,
+                                   isouter=False
+                                   ).join(s_Player,
+                                          (s_Player.c.id == Game.second_player)
+                                          & (s_Player.c.group == f_Player.c.group),
+                                          isouter=False
+                                          ).join(f_User,
+                                                 f_User.id == f_Player.c.user,
+                                                 isouter=False
+                                                 ).join(s_User,
+                                                        (s_User.id == s_Player.c.user)
+                                                        & (True if user_id == 0 else (
+                                                                    (f_User.id == user_id) | (s_User.id == user_id))),
+                                                        isouter=False
+                                                        ).filter(
+        finished == (Game.result is not None)
+    ).all()
+
+
+def select_game_requests_to_you(db, Rule, User, Game, Player, Season, Group, user_id):
+    # Возвращает список кортежей запросов на партию, которые нужно принять пользователю user_id.
+    # Партии не принятые, где оба игрока находятся в одной группе.
+
+    # [0]: Game_id
+    # [1]: Group_id
+    # [2]: first_player.id
+    # [3]: first_user.id
+    # [4]: first_user.name
+
+    f_Player = aliased(Player)
+    s_Player = aliased(Player)
+    f_User = aliased(User)
+
+    return db.session.query(Game.id,
+                            f_Player.c.group,
+                            Game.first_player,
+                            f_User.id,
+                            f_User.name,
+                            ).join(f_Player,
+                                   (f_Player.c.id == Game.first_player)
+                                   & (not Game.is_accepted),
+                                   isouter=False
+                                   ).join(s_Player,
+                                          (s_Player.c.id == Game.second_player)
+                                          & (s_Player.c.group == f_Player.c.group)
+                                          & (s_Player.c.user == user_id),
+                                          isouter=False
+                                          ).join(f_User,
+                                                 f_User.id == f_Player.c.user,
+                                                 isouter=False
+                                                 ).all()
+
+
+def select_your_game_requests(db, Rule, User, Game, Player, Season, Group, user_id):
+    # Возвращает список кортежей запросов на партию, которые отправил user_id.
+    # Партии не принятые, где оба игрока находятся в одной группе.
+
+    # [0]: Game_id
+    # [1]: Group_id
+    # [2]: second_player.id
+    # [3]: second_user.id
+    # [4]: second_user.name
+
+    f_Player = aliased(Player)
+    s_Player = aliased(Player)
+    s_User = aliased(User)
+
+    return db.session.query(Game.id,
+                            s_Player.c.group,
+                            Game.second_player,
+                            s_User.id,
+                            s_User.name,
+                            ).join(f_Player,
+                                   (f_Player.c.id == Game.first_player)
+                                   & (not Game.is_accepted)
+                                   & (f_Player.c.user == user_id),
+                                   isouter=False
+                                   ).join(s_Player,
+                                          (s_Player.c.id == Game.second_player)
+                                          & (s_Player.c.group == f_Player.c.group),
+                                          isouter=False
+                                          ).join(s_User,
+                                                 s_User.id == s_Player.c.user,
+                                                 isouter=False
+                                                 ).all()

@@ -34,7 +34,7 @@
 }
 .main h4{
   font-size: 32px;
-  color: #fff;
+  color: #ddd;
   font-weight: 600;
   margin-top: 10px;
 }
@@ -53,7 +53,9 @@
   color: #ccc;
 
 }
-
+td .header {
+  border-color: #42aaff;
+}
 .main button{
 
   background: #42aaff;
