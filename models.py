@@ -19,6 +19,7 @@ class User(db.Model):
     password = db.Column(db.String)
     email = db.Column(db.String(120), unique=True)
     is_valid = db.Column(db.Boolean, default=False)
+
     rule = db.Column(db.Integer, db.ForeignKey('rule.id'), default=None)
     registered_on = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -37,10 +38,11 @@ class Group(db.Model):
     name = db.Column(db.String)
     season = db.Column(db.Integer, db.ForeignKey('season.id'))
 
-    players = db.relationship('User', secondary='Player', backref='group', lazy='dynamic')
+    players = db.relationship('User', secondary=Player, backref='group', lazy='dynamic')
 
 
 class Game(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     is_accepted = db.Column(db.Boolean, default=False)
     result = db.Column(db.Boolean, default=None)

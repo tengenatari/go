@@ -16,11 +16,11 @@
         </tr>
         {% for member in members %}
         <tr>
-            <td>{{member[1]}}</td>
-            <td></td>
-            <td>{{member[6]}} : {{member[5] - member[6]}}</td>
-            <td><p class = {{member[4]}}><span>{{member[4]}}</span></p></td>
-            <td>{{"%0.1f" % (member[7]*100)}}</td>
+            <td class="member-info">{{member[1]}}</td>
+            <td class="member-info"></td>
+            <td class="member-info">{{member[6]}} : {{member[5] - member[6]}}</td>
+            <td class="member-info"><p class = {{member[4]}}><span>{{member[4]}}</span></p></td>
+            <td class="member-info">{{"%0.1f" % (member[7]*100)}}</td>
         </tr>
         {% endfor %}
     <tbody>

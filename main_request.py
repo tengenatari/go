@@ -3,32 +3,34 @@ from sqlalchemy import func, case, desc, BinaryExpression
 from sqlalchemy.sql.functions import coalesce
 from sqlalchemy.sql import bindparam
 from sqlalchemy.orm import aliased
+from models import Rule, User, Player, Group, Game, Season
+from app import db
 #from sqlalchemy import delete
 from UserLogin import UserLogin
 
-def select_active_season(db, Rule, User, Player, Group, Game, Season):
+def select_active_season():
     # Возвращает текущий сезон
     return db.session.query(Season).filter(Season.is_active == True).first()
 
 
-def select_seasons(db, Rule, User, Player, Group, Game, Season):
+def select_seasons():
     # Возвращает список всех существующих сезонов
     return db.session.query(Season).all()
 
 
-def select_active_groups(db, Rule, User, Game, Player, Season, Group):
+def select_active_groups():
     # Возвращает список групп в текущем сезоне
     return db.session.query(Group).join(Season, (Group.season == Season.id)
                                         & Season.is_active,
                                         isouter=False).all()
 
 
-def select_groups_in_season(season_id: int, db, Rule, User, Player, Group, Game, Season):
+def select_groups_in_season(season_id: int):
     # Возвращает список групп в заданном сезоне
     return db.session.query(Group).filter(Group.season == season_id).all()
 
 
-def select_users_data(db, Rule, User, Player, Group, Game, Season, max_games_value=10) -> list:
+def select_users_data( max_games_value=10) -> list:
     # [0]: User_id
     # [1]: User_name
     # [2]: Player_id
@@ -80,7 +82,7 @@ def select_users_data(db, Rule, User, Player, Group, Game, Season, max_games_val
     ).all()
 
 
-def select_accepted_games(db, Rule, User, Game, Player, Season, Group, finished=True, user_id=0):
+def select_accepted_games(finished=True, user_id=0):
     # Возвращает список кортежей с партиями. Партии принятые, где оба игрока находятся в одной группе.
     # Если параметр user_id заполнен (!= 0), то информация выводится только по одному пользователю.
     # Если параметр finished отвечает за то, требуется нам отобрать активные партии или завершённые.
@@ -132,7 +134,7 @@ def select_accepted_games(db, Rule, User, Game, Player, Season, Group, finished=
     ).all()
 
 
-def select_game_requests_to_you(db, Rule, User, Game, Player, Season, Group, user_id):
+def select_game_requests_to_you(user_id):
     # Возвращает список кортежей запросов на партию, которые нужно принять пользователю user_id.
     # Партии не принятые, где оба игрока находятся в одной группе.
 
@@ -166,7 +168,7 @@ def select_game_requests_to_you(db, Rule, User, Game, Player, Season, Group, use
                                                  ).all()
 
 
-def select_your_game_requests(db, Rule, User, Game, Player, Season, Group, user_id):
+def select_your_game_requests(user_id):
     # Возвращает список кортежей запросов на партию, которые отправил user_id.
     # Партии не принятые, где оба игрока находятся в одной группе.
 

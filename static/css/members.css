@@ -38,7 +38,7 @@
   justify-content: center;
   align-items: center;
   flex-wrap: nowrap;
-  border: 1px solid #b8b8b8;
+
   border-radius: 10px;
   padding: 10px 10px;
   width: 200px;
@@ -47,4 +47,10 @@
   color: #ddd;
   margin-right: 2px;
   margin-left: 2px;
+}
+.header {
+  border: 1px solid #42aaff;
+}
+.member-info{
+  border: 1px solid #b8b8b8;
 }
