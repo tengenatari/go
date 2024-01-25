@@ -255,10 +255,10 @@ def select_division_stat(division_id, max_games_value=10):
     # [2]: up_user_id   - id пользователя, который стоит в колонке таблицы дивизиона
     # [3]: up_user_name - Имя пользователя, который стоит в колонке таблицы дивизиона
 
-    # [4]: pairs_games_count - количеcтво сыгранных партий между left_user и up_user
+    # [4]: pairs_games_lose - количеcтво поражений left_user от up_user
     # [5]: pairs_games_win   - количеcтво побед left_user над up_user
 
-    # [6]: games_count - количеcтво сыгранных партий left_user в дивизионе
+    # [6]: games_lose  - количеcтво поражений left_user в дивизионе
     # [7]: games_win   - количеcтво побед left_user в дивизионе
     # [8]: win_rate    - процент побед left_user в дивизионе
     # [9]: score       - рейтинг left_user в дивизионе
@@ -329,9 +329,9 @@ def select_division_stat(division_id, max_games_value=10):
         pairs_stat.left_user_name,
         pairs_stat.up_user_id,
         pairs_stat.up_user_name,
-        pairs_stat.games_count,
+        pairs_stat.games_count - pairs_stat.games_win,
         pairs_stat.games_win,
-        user_stat.games_count,
+        user_stat.games_count - user_stat.games_win,
         user_stat.games_win,
         user_stat.win_rate, 
         user_stat.score
