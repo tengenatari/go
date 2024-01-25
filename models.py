@@ -30,10 +30,10 @@ class Season(db.Model):
     start_date = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
 
-    groups = db.relationship('Group', lazy='dynamic')
+    groups = db.relationship('Division', lazy='dynamic')
 
 
-class Group(db.Model):
+class Division(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     season = db.Column(db.Integer, db.ForeignKey('season.id'))

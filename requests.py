@@ -1,5 +1,5 @@
 from app import app, db
-from app import Rule, User, Player, Division, Game, Season
+from models import Rule, User, Player, Division, Game, Season
 from sqlalchemy import func, case, desc, BinaryExpression
 from sqlalchemy.sql.functions import coalesce
 #from sqlalchemy.sql import table, column
@@ -495,7 +495,7 @@ def Insert_test_values():
 def main():    
     app.app_context().push()
     
-    #Insert_test_values()
+    Insert_test_values()
 
     q = select_users_stat()
     for i in q:
