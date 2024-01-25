@@ -1,5 +1,5 @@
 from flask import flash
-from models import Rule, User, Player, Group, Game, Season
+from models import Rule, User, Player, Division, Game, Season
 
 def check_on_repeat(table, column, value, text):
     if table.query.filter(column == value).count() > 0:
@@ -27,7 +27,7 @@ def check_username(username):
     elif len(username) >= 15:
         flash("Имя пользователя должно быть не более 15 символов", category='error-msg')
         return False
-    elif check_on_repeat(User.name, username, text=text):
+    elif check_on_repeat(User, User.name, username, text=text):
         return False
     return True
 
@@ -37,7 +37,7 @@ def check_email(email):
     if email.split("@")[1] != 'study.utmn.ru' and email.split("@")[1] != 'utmn.ru':
         flash(message="Неверный формат почты, домен должен быть в формате utmn.ru", category='error-msg')
         return False
-    elif check_on_repeat(User.email, email, text=text):
+    elif check_on_repeat(User, User.email, email, text=text):
         return False
     return True
 

@@ -3,7 +3,7 @@ from datetime import datetime
 
 Player = db.Table('Player', db.Column('id', db.Integer, primary_key=True),
                   db.Column("user", db.Integer, db.ForeignKey('user.id')),
-                  db.Column("group", db.Integer, db.ForeignKey('group.id')))
+                  db.Column("division", db.Integer, db.ForeignKey('division.id')))
 
 
 class Rule(db.Model):
@@ -38,7 +38,7 @@ class Division(db.Model):
     name = db.Column(db.String)
     season = db.Column(db.Integer, db.ForeignKey('season.id'))
 
-    players = db.relationship('User', secondary=Player, backref='group', lazy='dynamic')
+    players = db.relationship('User', secondary=Player, backref='division', lazy='dynamic')
 
 
 class Game(db.Model):

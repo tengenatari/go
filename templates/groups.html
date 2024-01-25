@@ -13,17 +13,11 @@
     {% for season in seasons %}
     <button onclick=myFunction({{season.id}}) class="seasondropbtn">{{season.name}}</button>
     <div id = "seasondrop{{season.id}}"  class = "seasongroup">
-        <a class = "group" href="a">
-            <h3> Группа <span> A </span> </h3>
-
-        </a>
-        <a class = "group" href="s">
-            <h3> Группа <span> S </span> </h3>
-
-
-        </a>
-        <a class = "group" href="b">
-            <h3> Группа <span> B </span> </h3>
+        {% for group in select.select_divisions_in_season(season.id)%}
+            <a class = "group" href="/groups/{{group.id}}">
+                <h3> Группа <span> {{group.name}} </span> </h3>
+            </a>
+        {% endfor %}
 
 
         </a>

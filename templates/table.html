@@ -1,26 +1,10 @@
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="/static/css/styletable.css">
-    <link rel="shortcut icon" href="utmn.png">
-    <title>Let's go play go</title>
+{% extends 'main.html' %}
 
-  </head>
-  <body>
+{% block style %}
+<link rel="stylesheet" href="/static/css/styletable.css">
 
-    <div class="navbar">
-      <h2>UTMN</h2>
-      <ul>
-        <li><a href="index.html">Главная</a></li>
-        <li><a href="groups.html">Группы</a></li>
-        <li><a href="">Участники</a></li>
-        <li><a href="">Игры</a></li>
-        <li><a href="">Информация</a></li>
-      </ul>
-      <button class="btn">Регистрация</button>
-    </div>
+{% endblock %}
+{% block body %}
     <div class="main">
       <h3>Результаты <span> группы S</span> за декабрь</h3>
     </div>
@@ -100,8 +84,4 @@
           </tr>
         </tbody>
     </table>
-
-
-
-  </body>
-</html>
+{% endblock %}

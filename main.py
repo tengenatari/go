@@ -6,6 +6,8 @@ from checker import check_form
 from main_request import *
 from app import db, app, login_manager
 from models import *
+from typing import Callable
+from functools import partial
 
 
 @login_manager.user_loader
@@ -37,10 +39,16 @@ def profile_games():
     return render_template('profile_games.html')
 
 
-@app.route('/groups/<string:name_group>')
-def groups(name_group):
+@app.route('/groups/<int:group_id>')
+def groups(group_id):
 
-    return render_template('groups.html', seasons = select_seasons())
+    return render_template('table.html', Datebase=Datebase, group_id=group_id)
+
+
+@app.route('/groups/main')
+def main_group():
+
+    return render_template('groups.html', seasons=Datebase.select_seasons(), select=Datebase())
 
 
 @app.route('/games')
@@ -55,7 +63,7 @@ def games():
 
 @app.route('/members')
 def members():
-    return render_template("/members.html", members=select_users_data())
+    return render_template("/members.html", members=Datebase.select_users_stat())
 
 
 @app.route('/table.html')
