@@ -15,7 +15,7 @@ def check_password(password, password_2):
     elif password != password_2:
         flash(message="Пароли не совпадают", category='error-msg')
         return False
-    
+
     return True
 
 

@@ -42,7 +42,6 @@ class Group(db.Model):
 
 
 class Game(db.Model):
-
     id = db.Column(db.Integer, primary_key=True)
     is_accepted = db.Column(db.Boolean, default=False)
     result = db.Column(db.Boolean, default=None)

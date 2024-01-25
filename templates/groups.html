@@ -2,6 +2,7 @@
 
 {% block style %}
 <link rel="stylesheet" href="/static/css/groups.css">
+<script src="/static/js/css_helper.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -9,24 +10,25 @@
     <h3>Результаты</h3>
 </div>
 <div class="groups">
-
-    <div class = "secondgroups">
-        <a class = "othergroups" href="a">
+    {% for season in seasons %}
+    <button onclick=myFunction({{season.id}}) class="seasondropbtn">{{season.name}}</button>
+    <div id = "seasondrop{{season.id}}"  class = "seasongroup">
+        <a class = "group" href="a">
             <h3> Группа <span> A </span> </h3>
 
         </a>
-        <a class = "othergroups" href="s">
+        <a class = "group" href="s">
             <h3> Группа <span> S </span> </h3>
 
 
         </a>
-        <a class = "othergroups" href="b">
+        <a class = "group" href="b">
             <h3> Группа <span> B </span> </h3>
 
 
         </a>
     </div>
-
+    {% endfor %}
 
 </div>
 

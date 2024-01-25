@@ -1,20 +1,16 @@
-from datetime import datetime
-from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, flash, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from UserLogin import UserLogin
 from checker import check_form
 from main_request import *
 from app import db, app, login_manager
-from models import Rule, User, Player, Group, Game, Season
+from models import *
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return UserLogin().create(User.query.filter(User.id == user_id).first())
-
-
-
 
 
 @app.route('/')
@@ -34,17 +30,17 @@ def logout():
 def profile():
     return render_template('profile.html')
 
+
 @app.route('/profile/games')
 @login_required
 def profile_games():
     return render_template('profile_games.html')
 
 
-
 @app.route('/groups/<string:name_group>')
 def groups(name_group):
 
-    return render_template('groups.html')
+    return render_template('groups.html', seasons = select_seasons())
 
 
 @app.route('/games')
@@ -59,8 +55,7 @@ def games():
 
 @app.route('/members')
 def members():
-    members = select_users_data()
-    return render_template("/members.html", members=members)
+    return render_template("/members.html", members=select_users_data())
 
 
 @app.route('/table.html')
