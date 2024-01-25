@@ -249,19 +249,21 @@ def select_division_stat(division_id, max_games_value=10):
     # При подсчёте учитываются только принятые и завершённые игры в данном дивизионе.
     # При формировании пар, пара игрока с самим собой не формируются.
 
-    # [0]: left_user_id   - id пользователя, который стоит в строке таблицы дивизиона
-    # [1]: left_user_name - Имя пользователя, который стоит в строке таблицы дивизиона
+    # [0]: style - строка, описывающая стиль отображения ячейки таблицы
 
-    # [2]: up_user_id   - id пользователя, который стоит в колонке таблицы дивизиона
-    # [3]: up_user_name - Имя пользователя, который стоит в колонке таблицы дивизиона
+    # [1]: left_user_id   - id пользователя, который стоит в строке таблицы дивизиона
+    # [2]: left_user_name - Имя пользователя, который стоит в строке таблицы дивизиона
 
-    # [4]: pairs_games_lose - количеcтво поражений left_user от up_user
-    # [5]: pairs_games_win   - количеcтво побед left_user над up_user
+    # [3]: up_user_id   - id пользователя, который стоит в колонке таблицы дивизиона
+    # [4]: up_user_name - Имя пользователя, который стоит в колонке таблицы дивизиона
 
-    # [6]: games_lose  - количеcтво поражений left_user в дивизионе
-    # [7]: games_win   - количеcтво побед left_user в дивизионе
-    # [8]: win_rate    - процент побед left_user в дивизионе
-    # [9]: score       - рейтинг left_user в дивизионе
+    # [5]: pairs_games_lose - количеcтво поражений left_user от up_user
+    # [6]: pairs_games_win   - количеcтво побед left_user над up_user
+
+    # [7]: games_lose  - количеcтво поражений left_user в дивизионе
+    # [8]: games_win   - количеcтво побед left_user в дивизионе
+    # [9]: win_rate    - процент побед left_user в дивизионе
+    # [10]: score       - рейтинг left_user в дивизионе
     
     request = """
     CREATE TEMP TABLE games_stat AS
@@ -325,6 +327,11 @@ def select_division_stat(division_id, max_games_value=10):
     
     request = """
     SELECT
+        CASE 
+            WHEN  pairs_stat.left_user_id = pairs_stat.up_user_id
+            THEN :self_style
+            ELSE :other_style 
+        END AS style,
         pairs_stat.left_user_id,
         pairs_stat.left_user_name,
         pairs_stat.up_user_id,
@@ -339,7 +346,9 @@ def select_division_stat(division_id, max_games_value=10):
         INNER JOIN user_stat 
             ON user_stat.left_user_id = pairs_stat.left_user_id
     """
-    result = db.session.execute(text(request)).all()            
+    parameters = {"self_style":  "self-to-self",
+              "other_style": "self-to-other"}
+    result = db.session.execute(text(request), parameters).all()            
     
     db.session.execute(text("DROP TABLE games_stat"))
     db.session.execute(text("DROP TABLE pairs_stat"))
