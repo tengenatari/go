@@ -278,7 +278,6 @@ def select_division_stat(division_id, max_games_value=10):
             AND (left_player."division" = :division_param) 
         INNER JOIN Player AS up_player 
             ON (up_player."division" = :division_param)
-            AND (up_player.id != left_player.id) 
         INNER JOIN user AS up_user 
             ON up_user.id = up_player.user 
         LEFT OUTER JOIN game 
@@ -286,6 +285,7 @@ def select_division_stat(division_id, max_games_value=10):
             AND game.result IS NOT NULL
             AND up_player.id IN (game.first_player, game.second_player)
             AND left_player.id IN (game.first_player, game.second_player)
+            AND up_player.id != left_player.id
     """
     db.session.execute(text(request), {'division_param':division_id})
 
@@ -497,7 +497,7 @@ def main():
     
     Insert_test_values()
 
-    q = select_users_stat()
+    q = select_division_stat(4)
     for i in q:
        print(i)
     
