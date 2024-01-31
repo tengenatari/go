@@ -389,3 +389,47 @@ class Database:
         """
         result = db.session.execute(text(request), {'user_param': user_id})
         return result.all()
+    
+    def select_active_player(user_id):
+        # Возвращает кортеж из одной ячейки - player.id активного пользователя для данного юзера
+
+        request = """
+            SELECT
+                Player.id
+            FROM User 
+                INNER JOIN Player 
+                    ON :user_param == User.id
+                    AND Player.user = User.id 
+                INNER JOIN Division 
+                    ON Division.id = Player.division 
+                INNER JOIN Season 
+                    ON Season.id = Division.season 
+            LIMIT 1
+            """
+        result = db.session.execute(text(request), {'user_param': user_id})
+        return result.first()
+
+    def create_game_request(f_Player_id, s_Player_id):
+        # Запрос который по айди игроков, создаст партию, если они в одной группе, при успехе выдаст True, при ошибке False
+        request = """
+            SELECT
+                f_player.division = s_player.division, 
+                f_player.division,
+                s_player.division
+            FROM player AS f_player
+                INNER JOIN player AS s_player
+                    ON f_player.id = :f_player_param
+                    AND s_player.id = :s_player_param
+        """
+        result = db.session.execute(text(request), {'f_player_param': f_Player_id, 's_player_param': s_Player_id})
+        result = bool(result.first()[0])
+        if result:
+            new_game = Game(
+            is_accepted   = False,
+            result        = None,
+            first_player  = f_Player_id,
+            second_player = s_Player_id
+            )
+            db.session.add(new_game)
+            db.session.commit()
+        return result
