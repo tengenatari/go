@@ -139,16 +139,18 @@ class Database:
         # Если параметр finished отвечает за то, требуется нам отобрать активные партии или завершённые.
 
         # [0]: Game_id
-        # [1]: Division_id
-        # [2]: Game.result
+        # [1]: Game.result
 
-        # [3]: first_player.id
-        # [4]: first_user.id
-        # [5]: first_user.name
+        # [2]: Division_id
+        # [3]: Division_name
 
-        # [6]: second_player.id
-        # [7]: second_user.id
-        # [8]: second_user.name
+        # [4]: first_player.id
+        # [5]: first_user.id
+        # [6]: first_user.name
+
+        # [7]: second_player.id
+        # [8]: second_user.id
+        # [9]: second_user.name
 
         f_Player = aliased(Player)
         s_Player = aliased(Player)
@@ -156,8 +158,9 @@ class Database:
         s_User = aliased(User)
 
         return db.session.query(Game.id,
-                                f_Player.c.division,
                                 Game.result,
+                                Division.id,
+                                Division.name,
                                 Game.first_player,
                                 f_User.id,
                                 f_User.name,
@@ -180,7 +183,10 @@ class Database:
                                                             & (True if user_id == 0 else ((f_User.id == user_id) | (
                                                                         s_User.id == user_id))),
                                                             isouter=False
-                                                            ).filter(
+                                                            ).join(Division,
+                                                                Division.id == f_Player.c.division,
+                                                                isouter=False
+                                                                ).filter(
             finished == (Game.result is not None)
         ).all()
 
@@ -354,3 +360,32 @@ class Database:
         db.session.execute(text("DROP TABLE user_stat"))
 
         return result
+    
+    @staticmethod
+    def select_opponents(user_id):
+        # Выводить по айди пользователя, игроков текущей группы (кроме самого себя). 
+
+        # [0]: user.name
+        # [1]: player.id
+
+        request = """
+        SELECT 
+            user.name, 
+            player.id
+        FROM user 
+            INNER JOIN player 
+                ON player.user = user.id
+                AND user.id != :user_param
+                AND player.division IN (
+                    SELECT current_player.division
+                    FROM player AS current_player
+                        INNER JOIN division
+                            ON division.id = current_player.division
+                            AND current_player.user = :user_param
+                        INNER JOIN season
+                            ON season.id = division.season
+                            AND season.is_active 
+                ) 
+        """
+        result = db.session.execute(text(request), {'user_param': user_id})
+        return result.all()
