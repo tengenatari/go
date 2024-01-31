@@ -8,7 +8,7 @@ from sqlalchemy import delete, MetaData, select, text
 from UserLogin import UserLogin
 
 
-class Datebase:
+class Database:
 
     @staticmethod
     def select_active_season():

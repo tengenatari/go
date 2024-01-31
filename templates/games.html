@@ -1,6 +1,6 @@
 {% extends 'main.html' %}
 {% block style %}
-
+<link rel="stylesheet" href="/static/css/games.css">
 {% endblock %}
 {% block body %}
 
@@ -8,23 +8,23 @@
     <h3>Недавние партии</h3>
     <Table>
         <tr>
-            <td>Группа</td>
-            <td>Игрок 1</td>
-            <td>Результат партии</td>
-            <td>Игрок 2</td>
+            <td class="header">Группа</td>
+            <td class="header">Игрок 1</td>
+            <td class="header">Результат партии</td>
+            <td class="header">Игрок 2</td>
         </tr>
-    {% for game in Datebase.select_accepted_games() %}
+    {% for game in Database.select_accepted_games() %}
         <tr>
-            <td></td>
-            <td>{{game[5]}}</td>
-            <td>{% if game[2] %}
+            <td class="game-info"></td>
+            <td class="game-info">{{game[5]}}</td>
+            <td class="game-info">{% if game[2] %}
                     1:0
                 {% else %}
                     0:1
                 {% endif %}
 
             </td>
-            <td>{{game[8]}}</td>
+            <td class="game-info">{{game[8]}}</td>
         </tr>
     {% endfor %}
     </Table>

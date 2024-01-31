@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+{% block style %}
+{% endblock %}
+{% block body %}
+    <div class="main">
+        <div class="game-block">
+            <h3>Создать игру</h3>
+            <form class="form-send-req" method="post" action="send-request">
+                <select type="search" name="user2">
+                    {% for player in Database.select_users_stat() %}
+                    <option>{{player[1]}}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Отправить вызов">
+            </form>>
+        </div>
+        <div class="game-block">
+            <h3>Текущие игры</h3>
+            {% for game in Database.select_game_requests_to_you(current_user.get_user().id) %}
+
+            {% endfor%}
+        </div>
+        <div class="game-block">
+            <h3>Вызовы</h3>
+
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -31,34 +31,42 @@ def logout():
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html', Datebase=Datebase)
+    return render_template('profile.html', Database=Database)
 
 
 @app.route('/profile/games')
 @login_required
 def profile_games():
-    return render_template('profile_games.html')
+    return render_template('game-req.html', Database=Database)
+
+
+@app.route('/send-request', methods=['GET', 'POST'])
+@login_required
+def send_request():
+    if request.method == 'POST':
+        req = request.form
+        user2 = req["user2"]
+        if Database.check_group(current_user, user2):
+            Database.create_req()
 
 
 @app.route('/groups/<int:group_id>')
 def groups(group_id):
-    matrix = Datebase.select_division_stat(group_id)
+    matrix = Database.select_division_stat(group_id)
     count = int(sqrt(len(matrix)))
     return render_template('table.html', matrix=matrix,
                            current_group=Division.query.filter_by(id=group_id).first(), count=count)
 
 
-
-
 @app.route('/groups/main')
 def main_group():
 
-    return render_template('groups.html', seasons=Datebase.select_seasons(), select=Datebase())
+    return render_template('groups.html', seasons=Database.select_seasons(), select=Database())
 
 
 @app.route('/games')
 def view_games():
-    return render_template('games.html', Datebase=Datebase)
+    return render_template('games.html', Database=Database)
 
 
 @app.route('/about')
@@ -68,7 +76,7 @@ def about():
 
 @app.route('/members')
 def members():
-    return render_template("/members.html", members=Datebase.select_users_stat())
+    return render_template("/members.html", members=Database.select_users_stat())
 
 
 @app.route('/authpage', methods=['GET', 'POST'])

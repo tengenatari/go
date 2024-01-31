@@ -1,0 +1,61 @@
+
+Table{
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  flex-wrap: nowrap;
+	width: 100%;
+  border-radius: 2px;
+	border-collapse: collapse;
+  padding: 10px;
+
+}
+Table tr{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  border-radius: 10px;
+  height: 120px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+Table td{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  border-radius: 10px;
+  padding: 10px 10px;
+  width: 200px;
+  height: 100px;
+  text-decoration: none;
+  color: #ddd;
+  margin-right: 2px;
+  margin-left: 2px;
+}
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.main h3{
+  color: #ddd;
+  font-size: 20px;
+  margin-top: 20px
+
+}
+.main h3 span{
+  color: #42aaff;
+}
+
+.header {
+  border: 1px solid #42aaff;
+}
+.game-info{
+  border: 1px solid #b8b8b8;
+}
