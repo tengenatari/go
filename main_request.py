@@ -7,7 +7,8 @@ from sqlalchemy.orm import aliased
 from sqlalchemy import delete, MetaData, select, text
 from UserLogin import UserLogin
 
-class Datebase():
+
+class Datebase:
 
     @staticmethod
     def select_active_season():
@@ -32,7 +33,7 @@ class Datebase():
         return db.session.query(Division).filter(Division.season == season_id).all()
 
     @staticmethod
-    def select_users_stat(max_games_value=10, user_id=0):
+    def select_users_stat(user_id=0, max_games_value=10):
         # Выдаёт список кортежей со статистикой по активным пользователям.
         # Если параметр user_id заполнен (!= 0), то информация выводится только по одному пользователю.
 
@@ -128,6 +129,7 @@ class Datebase():
 
         db.session.execute(text("DROP TABLE user_data"))
         db.session.execute(text("DROP TABLE division_stat"))
+        db.session.execute(text("DROP TABLE all_stat"))
         return result
 
     @staticmethod
@@ -256,19 +258,21 @@ class Datebase():
         # При подсчёте учитываются только принятые и завершённые игры в данном дивизионе.
         # При формировании пар, пара игрока с самим собой не формируются.
 
-        # [0]: left_user_id   - id пользователя, который стоит в строке таблицы дивизиона
-        # [1]: left_user_name - Имя пользователя, который стоит в строке таблицы дивизиона
+        # [0]: style - строка, описывающая стиль отображения ячейки таблицы
 
-        # [2]: up_user_id   - id пользователя, который стоит в колонке таблицы дивизиона
-        # [3]: up_user_name - Имя пользователя, который стоит в колонке таблицы дивизиона
+        # [1]: left_user_id   - id пользователя, который стоит в строке таблицы дивизиона
+        # [2]: left_user_name - Имя пользователя, который стоит в строке таблицы дивизиона
 
-        # [4]: pairs_games_lose - количеcтво поражений left_user от up_user
-        # [5]: pairs_games_win   - количеcтво побед left_user над up_user
+        # [3]: up_user_id   - id пользователя, который стоит в колонке таблицы дивизиона
+        # [4]: up_user_name - Имя пользователя, который стоит в колонке таблицы дивизиона
 
-        # [6]: games_lose  - количеcтво поражений left_user в дивизионе
-        # [7]: games_win   - количеcтво побед left_user в дивизионе
-        # [8]: win_rate    - процент побед left_user в дивизионе
-        # [9]: score       - рейтинг left_user в дивизионе
+        # [5]: pairs_games_lose - количеcтво поражений left_user от up_user
+        # [6]: pairs_games_win   - количеcтво побед left_user над up_user
+
+        # [7]: games_lose  - количеcтво поражений left_user в дивизионе
+        # [8]: games_win   - количеcтво побед left_user в дивизионе
+        # [9]: win_rate    - процент побед left_user в дивизионе
+        # [10]: score       - рейтинг left_user в дивизионе
 
         request = """
         CREATE TEMP TABLE games_stat AS
@@ -285,7 +289,6 @@ class Datebase():
                 AND (left_player."division" = :division_param) 
             INNER JOIN Player AS up_player 
                 ON (up_player."division" = :division_param)
-                AND (up_player.id != left_player.id) 
             INNER JOIN user AS up_user 
                 ON up_user.id = up_player.user 
             LEFT OUTER JOIN game 
@@ -293,6 +296,7 @@ class Datebase():
                 AND game.result IS NOT NULL
                 AND up_player.id IN (game.first_player, game.second_player)
                 AND left_player.id IN (game.first_player, game.second_player)
+                AND up_player.id != left_player.id
         """
         db.session.execute(text(request), {'division_param': division_id})
 
@@ -332,6 +336,11 @@ class Datebase():
 
         request = """
         SELECT
+            CASE 
+                WHEN  pairs_stat.left_user_id = pairs_stat.up_user_id
+                THEN :self_style
+                ELSE :other_style 
+            END AS style,
             pairs_stat.left_user_id,
             pairs_stat.left_user_name,
             pairs_stat.up_user_id,
@@ -346,7 +355,9 @@ class Datebase():
             INNER JOIN user_stat 
                 ON user_stat.left_user_id = pairs_stat.left_user_id
         """
-        result = db.session.execute(text(request)).all()
+        parameters = {"self_style": "self-to-self",
+                      "other_style": "self-to-other"}
+        result = db.session.execute(text(request), parameters).all()
 
         db.session.execute(text("DROP TABLE games_stat"))
         db.session.execute(text("DROP TABLE pairs_stat"))

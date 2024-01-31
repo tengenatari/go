@@ -21,17 +21,23 @@
             <div class="text"><span>Верификация:</span>    {%if current_user.get_user().is_valid%}
             Почта подтверждена {% else %}</div> <form action="/profile/ver"><button type="submit">Подтвердить почту</button></form>{% endif %}
         </div>
+
         <div class="user-info-block">
             <div class="text"><span>Группа:</span></div>
-            <div class="text"><span>Отсутствует</span></div>
+            {% if Datebase.select_users_stat(current_user.get_user().id)[3] %}
+                    <div class="text">{{Datebase.select_users_stat(current_user.get_user().id)[3]}}</div>
+            {% else %}
+                <div class="text">Отсутствует
+                      <form action="/profile/join/group"><button type="submit"> Вступить </button></form>
+                </div>
         </div>
         <div class="user-info-block">
-            <div class="text"><span>Группа:</span></div>
-            <div class="text"><span>Отсутствует</span></div>
+            <div class="text"> <span>Пароль</span> <form action="/profile/change/password"><button type="submit"> Сменить </button></form></div>
+
         </div>
-        <div class="user-info-block">
-            <div class="text"><span>Группа:</span></div>
-            <div class="text"><span>Отсутствует</span></div>
+
+
+            {% endif %}
         </div>
 
     </div>

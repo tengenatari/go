@@ -37,3 +37,17 @@
   margin-left: 10px;
   margin-right: 10px;
 }
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.main h3{
+  color: #ddd;
+  font-size: 20px;
+  margin-top: 20px
+}
+.main h3 span{
+  color: #42aaff;
+}

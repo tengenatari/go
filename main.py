@@ -1,3 +1,4 @@
+from math import sqrt
 from flask import Flask, render_template, request, flash, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -30,7 +31,7 @@ def logout():
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html')
+    return render_template('profile.html', Datebase=Datebase)
 
 
 @app.route('/profile/games')
@@ -41,8 +42,12 @@ def profile_games():
 
 @app.route('/groups/<int:group_id>')
 def groups(group_id):
+    matrix = Datebase.select_division_stat(group_id)
+    count = int(sqrt(len(matrix)))
+    return render_template('table.html', matrix=matrix,
+                           current_group=Division.query.filter_by(id=group_id).first(), count=count)
 
-    return render_template('table.html', Datebase=Datebase, group_id=group_id)
+
 
 
 @app.route('/groups/main')
@@ -53,22 +58,17 @@ def main_group():
 
 @app.route('/games')
 def view_games():
-    return render_template('games.html')
+    return render_template('games.html', Datebase=Datebase)
 
 
 @app.route('/about')
-def games():
+def about():
     return render_template('about.html')
 
 
 @app.route('/members')
 def members():
     return render_template("/members.html", members=Datebase.select_users_stat())
-
-
-@app.route('/table.html')
-def tables():
-    return render_template("table.html")
 
 
 @app.route('/authpage', methods=['GET', 'POST'])
