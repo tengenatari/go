@@ -190,33 +190,28 @@ class Database:
         # Партии не принятые, где оба игрока находятся в одной группе.
 
         # [0]: Game_id
-        # [1]: Division_id
-        # [2]: first_player.id
-        # [3]: first_user.id
-        # [4]: first_user.name
+        # [1]: first_player.id
+        # [2]: first_user.id
+        # [3]: first_user.name
 
-        f_Player = aliased(Player)
-        s_Player = aliased(Player)
-        f_User = aliased(User)
-
-        return db.session.query(Game.id,
-                                f_Player.c.division,
-                                Game.first_player,
-                                f_User.id,
-                                f_User.name,
-                                ).join(f_Player,
-                                       (f_Player.c.id == Game.first_player)
-                                       & (not Game.is_accepted),
-                                       isouter=False
-                                       ).join(s_Player,
-                                              (s_Player.c.id == Game.second_player)
-                                              & (s_Player.c.division == f_Player.c.division)
-                                              & (s_Player.c.user == user_id),
-                                              isouter=False
-                                              ).join(f_User,
-                                                     f_User.id == f_Player.c.user,
-                                                     isouter=False
-                                                     ).all()
+        request = """
+        SELECT 
+            game.id AS game_id, 
+            game.first_player,
+            f_user.id,
+            f_user.name
+        FROM game 
+            INNER JOIN player AS s_player 
+                ON (s_player.id = game.second_player)
+                AND s_player.user = :user_param
+                AND NOT game.is_accepted
+            INNER JOIN player AS f_player 
+                ON (f_player.id = game.first_player)
+            INNER JOIN user AS f_user 
+                ON f_user.id = f_player.user 
+        """
+        result = db.session.execute(text(request), {'user_param': user_id})
+        return result.all()
 
     @staticmethod
     def select_your_game_requests(user_id):
@@ -224,33 +219,28 @@ class Database:
         # Партии не принятые, где оба игрока находятся в одной группе.
 
         # [0]: Game_id
-        # [1]: Division_id
-        # [2]: second_player.id
-        # [3]: second_user.id
-        # [4]: second_user.name
+        # [1]: second_player.id
+        # [2]: second_user.id
+        # [3]: second_user.name
 
-        f_Player = aliased(Player)
-        s_Player = aliased(Player)
-        s_User = aliased(User)
-
-        return db.session.query(Game.id,
-                                s_Player.c.division,
-                                Game.second_player,
-                                s_User.id,
-                                s_User.name,
-                                ).join(f_Player,
-                                       (f_Player.c.id == Game.first_player)
-                                       & (not Game.is_accepted)
-                                       & (f_Player.c.user == user_id),
-                                       isouter=False
-                                       ).join(s_Player,
-                                              (s_Player.c.id == Game.second_player)
-                                              & (s_Player.c.division == f_Player.c.division),
-                                              isouter=False
-                                              ).join(s_User,
-                                                     s_User.id == s_Player.c.user,
-                                                     isouter=False
-                                                     ).all()
+        request = """
+        SELECT 
+            game.id AS game_id, 
+            game.second_player,
+            s_user.id,
+            s_user.name
+        FROM game 
+            INNER JOIN player AS f_player 
+                ON (f_player.id = game.first_player)
+                AND f_player.user = :user_param
+                AND NOT game.is_accepted
+            INNER JOIN player AS s_player 
+                ON (s_player.id = game.second_player)
+            INNER JOIN user AS s_user 
+                ON s_user.id = s_player.user 
+        """
+        result = db.session.execute(text(request), {'user_param': user_id})
+        return result.all()
 
     @staticmethod
     def select_division_stat(division_id, max_games_value=10):
