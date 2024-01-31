@@ -181,12 +181,12 @@ class Database:
                                                      ).join(s_User,
                                                             (s_User.id == s_Player.c.user)
                                                             & (True if user_id == 0 else ((f_User.id == user_id) | (
-                                                                        s_User.id == user_id))),
+                                                                    s_User.id == user_id))),
                                                             isouter=False
                                                             ).join(Division,
-                                                                Division.id == f_Player.c.division,
-                                                                isouter=False
-                                                                ).filter(
+                                                                   Division.id == f_Player.c.division,
+                                                                   isouter=False
+                                                                   ).filter(
             finished == (Game.result is not None)
         ).all()
 
@@ -360,10 +360,10 @@ class Database:
         db.session.execute(text("DROP TABLE user_stat"))
 
         return result
-    
+
     @staticmethod
     def select_opponents(user_id):
-        # Выводить по айди пользователя, игроков текущей группы (кроме самого себя). 
+        # Выводить по айди пользователя, игроков текущей группы (кроме самого себя).
 
         # [0]: user.name
         # [1]: player.id
@@ -389,7 +389,7 @@ class Database:
         """
         result = db.session.execute(text(request), {'user_param': user_id})
         return result.all()
-    
+
     def select_active_player(user_id):
         # Возвращает кортеж из одной ячейки - player.id активного пользователя для данного юзера
 
@@ -425,10 +425,10 @@ class Database:
         result = bool(result.first()[0])
         if result:
             new_game = Game(
-            is_accepted   = False,
-            result        = None,
-            first_player  = f_Player_id,
-            second_player = s_Player_id
+                is_accepted=False,
+                result=None,
+                first_player=f_Player_id,
+                second_player=s_Player_id
             )
             db.session.add(new_game)
             db.session.commit()

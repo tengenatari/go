@@ -6,7 +6,9 @@
 
 {% block body %}
 <div class="main">
-
+    {% for category, msg in get_flashed_messages(True)%}
+    <div class = {{category}}>{{msg}}</div>
+    {% endfor %}
     <div class="user-block">
         <h4>{{current_user.get_user().name}}</h4>
         <div class="user-info-block">
@@ -24,20 +26,23 @@
 
         <div class="user-info-block">
             <div class="text"><span>Группа:</span></div>
-            {% if Datebase.select_users_stat(current_user.get_user().id)[3] %}
-                    <div class="text">{{Datebase.select_users_stat(current_user.get_user().id)[3]}}</div>
+            {% if Database.select_users_stat(current_user.get_user().id)[3] %}
+                    <div class="text">{{Database.select_users_stat(current_user.get_user().id)[3]}}</div>
             {% else %}
                 <div class="text">Отсутствует
                       <form action="/profile/join/group"><button type="submit"> Вступить </button></form>
                 </div>
         </div>
+
+
+
+            {% endif %}
         <div class="user-info-block">
             <div class="text"> <span>Пароль</span> <form action="/profile/change/password"><button type="submit"> Сменить </button></form></div>
 
         </div>
 
 
-            {% endif %}
         </div>
 
     </div>

@@ -1,0 +1,26 @@
+.main{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    padding: 20px;
+}
+
+.game-block{
+    border: 2px solid #42aaff;
+    background: #171719;
+    border-radius: 10px;
+    width: 30%;
+    height: 20%;
+    min-width: 300px;
+    min-height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.main h3
+{
+    color: #ddd;
+
+}

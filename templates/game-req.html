@@ -1,29 +1,78 @@
 {% extends 'main.html' %}
 {% block style %}
+<link rel="stylesheet" href="/static/css/game-req.css">
 {% endblock %}
 {% block body %}
     <div class="main">
-        <div class="game-block">
-            <h3>Создать игру</h3>
-            <form class="form-send-req" method="post" action="send-request">
-                <select type="search" name="user2">
-                    {% for player in Database.select_users_stat() %}
-                    <option>{{player[1]}}</option>
-                    {% endfor %}
-                </select>
-                <input type="submit" value="Отправить вызов">
-            </form>>
-        </div>
-        <div class="game-block">
-            <h3>Текущие игры</h3>
-            {% for game in Database.select_game_requests_to_you(current_user.get_user().id) %}
+        {% for category, msg in get_flashed_messages(True)%}
+            <div class = {{category}}>{{msg}}</div>
+        {% endfor %}
+        <div class = "blocks">
+            <div class="game-block">
+                <h3>Создать игру</h3>
 
-            {% endfor%}
+                    <form class="form-send-req" method="post" action="send-request">
+                        <select name="user2">
+                            {% for player in Database.select_users_stat() %}
+                                <option value="{{player[1]}}">{{player[1]}}</option>
+                            {% endfor %}
+                        </select>
+                        <input class="sum-btn" type="submit" value="Отправить вызов">
+                    </form>
+
+            </div>
+            {% for game in Database.select_your_game_requests(current_user.get_user().id) %}
+
+            <div class="game-block">
+                <p>Оппонент: <span>{{game[3]}}</span>></p>
+                <form method="post" action="dec-req">
+                    <input type="submit" name="first-player" value="Отменить">
+                </form>
+            </div>
+            {% endfor %}
         </div>
+
+        <div class = "blocks">
+            <div class="game-block">
+            <h3>Текущие игры</h3>
+
+
+
+            </div>
+            {% for game in Database.select_your_game_requests(current_user.get_user().id) %}
+            <div class="game-block">
+                <p>Оппонент: <span>{{game[3]}}</span>></p>
+                <form method="post" action="dec-req">
+                    <input type="submit" name="first-player" value="Отменить">
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="blocks">
         <div class="game-block">
             <h3>Вызовы</h3>
+                <form class="form-all-game">
+                    <input class="acc-btn" type="submit" name="accept-all" value="Принять все">
+                    <input class="dec-btn" type="submit" name="accept-all" value="Отклонить все">
+                    <input type="checkbox" name="accept" value="accept">
+                </form>>
 
+
+            </div>
+            {% for game in Database.select_your_game_requests(current_user.get_user().id) %}
+            <div class="game-block">
+                <p>Оппонент: <span>{{game[3]}}</span>></p>
+                <form  class="form-acc-game" action="/accept-game">
+                    <input  class="acc-btn" type="submit" name="accept-all" value="Принять все">
+                    <input class="dec-btn" type="submit" name="decline-all" value="Отклонить все">
+                    <input type="checkbox" name="accept" value="accept">
+                </form>
+            </div>
+            {% endfor %}
         </div>
+
+
+
 
     </div>
 
