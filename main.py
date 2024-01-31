@@ -46,8 +46,10 @@ def send_request():
     if request.method == 'POST':
         req = request.form
         user2 = req["user2"]
-        if Database.check_group(current_user, user2):
-            Database.create_req()
+        if not(Database.create_game_request(current_user.get_user().id, user2)):
+            flash(message='Вы находитесь в разных группах', category='msg-success')
+    return redirect('/profile/games')
+
 
 
 @app.route('/groups/<int:group_id>')

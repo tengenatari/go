@@ -11,10 +11,10 @@
             <div class="game-block">
                 <h3>Создать игру</h3>
 
-                    <form class="form-send-req" method="post" action="send-request">
-                        <select name="user2">
-                            {% for player in Database.select_users_stat() %}
-                                <option value="{{player[1]}}">{{player[1]}}</option>
+                    <form class="form-send-req" method="post" action="/send-request">
+                        <select name="user2" required>
+                            {% for player in Database.select_opponents(current_user.get_user().id) %}
+                                <option value="{{player[1]}}">{{player[0]}}</option>
                             {% endfor %}
                         </select>
                         <input class="sum-btn" type="submit" value="Отправить вызов">
@@ -27,6 +27,7 @@
                 <p>Оппонент: <span>{{game[3]}}</span>></p>
                 <form method="post" action="dec-req">
                     <input type="submit" name="first-player" value="Отменить">
+
                 </form>
             </div>
             {% endfor %}
@@ -34,16 +35,15 @@
 
         <div class = "blocks">
             <div class="game-block">
-            <h3>Текущие игры</h3>
-
-
+                <h3>Текущие игры</h3>
 
             </div>
-            {% for game in Database.select_your_game_requests(current_user.get_user().id) %}
+            {% for game in Database.select_accepted_games(False, current_user.get_user().id) %}
             <div class="game-block">
                 <p>Оппонент: <span>{{game[3]}}</span>></p>
                 <form method="post" action="dec-req">
                     <input type="submit" name="first-player" value="Отменить">
+                    <input type='hidden' name="game_id" value="{{game[0]}}"/>
                 </form>
             </div>
             {% endfor %}
@@ -54,18 +54,18 @@
                 <form class="form-all-game">
                     <input class="acc-btn" type="submit" name="accept-all" value="Принять все">
                     <input class="dec-btn" type="submit" name="accept-all" value="Отклонить все">
-                    <input type="checkbox" name="accept" value="accept">
+                    <input type="checkbox" name="accept" value="accept" required>
                 </form>>
 
 
             </div>
-            {% for game in Database.select_your_game_requests(current_user.get_user().id) %}
+            {% for game in Database.select_game_requests_to_you(current_user.get_user().id) %}
             <div class="game-block">
                 <p>Оппонент: <span>{{game[3]}}</span>></p>
                 <form  class="form-acc-game" action="/accept-game">
-                    <input  class="acc-btn" type="submit" name="accept-all" value="Принять все">
-                    <input class="dec-btn" type="submit" name="decline-all" value="Отклонить все">
-                    <input type="checkbox" name="accept" value="accept">
+                    <input  class="acc-btn" type="submit" name="accept-all" value="Принять">
+                    <input class="dec-btn" type="submit" name="decline-all" value="Отклонить">
+                    <input type="checkbox" name="accept" value="accept" required>
                 </form>
             </div>
             {% endfor %}

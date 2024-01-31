@@ -390,6 +390,7 @@ class Database:
         result = db.session.execute(text(request), {'user_param': user_id})
         return result.all()
 
+    @staticmethod
     def select_active_player(user_id):
         # Возвращает кортеж из одной ячейки - player.id активного пользователя для данного юзера
 
@@ -409,6 +410,7 @@ class Database:
         result = db.session.execute(text(request), {'user_param': user_id})
         return result.first()
 
+    @staticmethod
     def create_game_request(f_Player_id, s_Player_id):
         # Запрос который по айди игроков, создаст партию, если они в одной группе, при успехе выдаст True, при ошибке False
         request = """
