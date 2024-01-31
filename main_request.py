@@ -136,7 +136,7 @@ class Database:
     def select_accepted_games(finished=True, user_id=0):
         # Возвращает список кортежей с партиями. Партии принятые, где оба игрока находятся в одной группе.
         # Если параметр user_id заполнен (!= 0), то информация выводится только по одному пользователю.
-        # Если параметр finished отвечает за то, требуется нам отобрать активные партии или завершённые.
+        # Параметр finished отвечает за то, требуется нам отобрать активные партии или завершённые.
 
         # [0]: Game_id
         # [1]: Game.result
@@ -409,6 +409,23 @@ class Database:
             """
         result = db.session.execute(text(request), {'user_param': user_id})
         return result.first()
+    
+    @staticmethod
+    def select_users_in_game(game_id):
+        # Возвращает массив из кортежей user.id, которые учавствуют в партии game_id
+
+        request = """
+        SELECT
+            user.id
+        FROM user
+            INNER JOIN player
+                ON player.user = user.id
+            INNER JOIN game
+                ON game.id = :game_param
+                AND player.id IN (game.first_player, game.second_player)
+        """
+        result = db.session.execute(text(request), {"game_param": game_id})
+        return result.all()
 
     @staticmethod
     def create_game_request(f_Player_id, s_Player_id):
@@ -436,6 +453,9 @@ class Database:
             db.session.commit()
         return result
     
+
+    
+    @staticmethod
     def update_obj(_class, filter_col, filter_value, update_col, update_value):
         # Устанавливает значения update_value в атрибут update_col
         # во все экземпляры класса _class, удовлетворяющих условию filter_col == filter_value
@@ -443,8 +463,54 @@ class Database:
         db.session.query(_class).filter(filter_col == filter_value).update({update_col: update_value}, synchronize_session = False)
         db.session.commit()
 
+    @staticmethod
+    def update_all_game_requests_to_you(user_id):
+        # Принимает все запросы на партию, которые нужно принять пользователю user_id.
+
+        request = """
+        UPDATE game
+        SET is_accepted = True
+        WHERE game.id IN (SELECT 
+                game.id
+            FROM game 
+                INNER JOIN player AS s_player 
+                    ON (s_player.id = game.second_player)
+                    AND s_player.user = :user_param
+                    AND NOT game.is_accepted
+                INNER JOIN player AS f_player 
+                    ON (f_player.id = game.first_player)
+                INNER JOIN user AS f_user 
+                    ON f_user.id = f_player.user) 
+        """
+        db.session.execute(text(request), {'user_param': user_id})
+        db.session.commit()
+
+    @staticmethod
     def delete_obj(_class, filter_col, filter_value):
         # Удаляет все экземпляры класса _class, в которых filter_col == filter_value
 
         db.session.query(_class).filter(filter_col == filter_value).delete()
         db.session.commit()
+
+    @staticmethod
+    def delete_all_game_requests_to_you(user_id):
+        # Отклоняет все запросы на партию, которые нужно принять пользователю user_id.
+
+        request = """
+        DELETE FROM game
+        WHERE game.id IN (SELECT 
+                game.id
+            FROM game 
+                INNER JOIN player AS s_player 
+                    ON (s_player.id = game.second_player)
+                    AND s_player.user = :user_param
+                    AND NOT game.is_accepted
+                INNER JOIN player AS f_player 
+                    ON (f_player.id = game.first_player)
+                INNER JOIN user AS f_user 
+                    ON f_user.id = f_player.user) 
+        """
+        db.session.execute(text(request), {'user_param': user_id})
+        db.session.commit()
+
+    
