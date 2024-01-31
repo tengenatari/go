@@ -15,16 +15,16 @@
         </tr>
     {% for game in Database.select_accepted_games() %}
         <tr>
-            <td class="game-info"></td>
-            <td class="game-info">{{game[5]}}</td>
-            <td class="game-info">{% if game[2] %}
+            <td class="game-info">{{game[3]}}</td>
+            <td class="game-info">{{game[6]}}</td>
+            <td class="game-info">{% if game[1] %}
                     1:0
                 {% else %}
                     0:1
                 {% endif %}
 
             </td>
-            <td class="game-info">{{game[8]}}</td>
+            <td class="game-info">{{game[9]}}</td>
         </tr>
     {% endfor %}
     </Table>
