@@ -18,7 +18,7 @@ class Database:
     @staticmethod
     def select_seasons():
         # Возвращает список всех существующих сезонов
-        return db.session.query(Season).all()
+        return db.session.query(Season).order_by(desc(Season.start_date)).all()
 
     @staticmethod
     def select_active_divisions():
