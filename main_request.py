@@ -18,7 +18,7 @@ class Database:
     @staticmethod
     def select_seasons():
         # Возвращает список всех существующих сезонов
-        return db.session.query(Season).order_by(desc(Season.start_date)).all()
+        return db.session.query(Season).all()
 
     @staticmethod
     def select_active_divisions():
@@ -435,14 +435,17 @@ class Database:
             db.session.add(new_game)
             db.session.commit()
         return result
-    
+
+    @staticmethod
     def update_obj(_class, filter_col, filter_value, update_col, update_value):
         # Устанавливает значения update_value в атрибут update_col
         # во все экземпляры класса _class, удовлетворяющих условию filter_col == filter_value
 
-        db.session.query(_class).filter(filter_col == filter_value).update({update_col: update_value}, synchronize_session = False)
+        db.session.query(_class).filter(filter_col == filter_value).update({update_col: update_value},
+                                                                           synchronize_session=False)
         db.session.commit()
 
+    @staticmethod
     def delete_obj(_class, filter_col, filter_value):
         # Удаляет все экземпляры класса _class, в которых filter_col == filter_value
 

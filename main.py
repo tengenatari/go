@@ -51,6 +51,38 @@ def send_request():
     return redirect('/profile/games')
 
 
+@app.route('/profile/join/group', methods=['GET', 'POST'])
+@login_required
+def send_request_join_group():
+    if request.method == 'POST':
+        if current_user.get_user().is_valid:
+            flash("Вы успешно вступили в группу", category='msg-success')
+        else:
+            flash("Вы не можете вступить в группу, пока не подтвердите почту", category='error-msg')
+    return redirect('/profile/games')
+
+
+@app.route('/update-game/<string:query>', methods=['GET', 'POST'])
+@login_required
+def decline_game_request(query):
+    if request.method == 'POST':
+        req = request.form
+
+        if query == "one":
+            game_id = int(req["game_id"])
+            if req["accept"] == "Принять":
+                Database.update_obj(Game, Game.id, game_id, Game.is_accepted, True)
+            elif req["accept"] == "Отклонить" or req["accept"] == "Отменить":
+                Database.delete_obj(Game, Game.id, game_id)
+
+            else:
+                return redirect("404.html")
+    return redirect('/profile/games')
+
+
+
+
+
 
 @app.route('/groups/<int:group_id>')
 def groups(group_id):
@@ -123,3 +155,5 @@ def register():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
