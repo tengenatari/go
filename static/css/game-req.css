@@ -1,26 +1,76 @@
 .main{
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
+
     flex-direction: row;
-    padding: 20px;
+    padding: 30px;
 }
 
 .game-block{
     border: 2px solid #42aaff;
     background: #171719;
     border-radius: 10px;
-    width: 30%;
-    height: 20%;
-    min-width: 300px;
-    min-height: 150px;
+
+    width: 300px;
+    height: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-top: 20px;
+    margin-right: 75px;
 }
 .main h3
 {
     color: #ddd;
 
+}
+.main p{
+    color: #ddd;
+}
+.main span{
+    color: #42aaff;
+}
+.dec-btn{
+    padding: 10px 10px;
+    border: 2px solid #FF4040;
+    background: rgba(255, 0, 0, 0.2);
+    color: #ddd;
+    border-radius: 10px;
+    margin-top: 5px;
+    transition:  background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.acc-btn{
+    padding: 10px 10px;
+
+    border: 2px solid rgba(0, 200, 0, 1);
+    background: rgba(0, 200, 0, 0.2);
+    color: #ddd;
+    border-radius: 10px;
+    margin-top: 5px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.acc-btn:hover{
+    border-color: rgba(0, 255,0);
+    background-color: rgba(0, 255,0, 0.2);
+}
+
+.dec-btn:hover{
+    border-color: rgba(255, 0,0);
+    background-color: rgba(255, 0,0, 0.2);
+}
+
+.select{
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: 2px solid #42aaff;
+    background-color: #292b2e;
+    border-radius: 10px;
+    color: #ddd;
+}
+
+.p {
+    margin-top: 10px;
 }

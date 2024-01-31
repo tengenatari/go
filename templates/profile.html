@@ -20,8 +20,8 @@
             <div class="text"> {{current_user.get_user().registered_on.date()}} </div>
         </div>
         <div class="user-info-block">
-            <div class="text"><span>Верификация:</span>    {%if current_user.get_user().is_valid%}
-            Почта подтверждена {% else %}</div> <form action="/profile/ver"><button type="submit">Подтвердить почту</button></form>{% endif %}
+            <div class="text"><span> Верификация:</span>    {%if current_user.get_user().is_valid%}
+            </div><div class="text"> Почта подтверждена </div>{% else %}</div><form action="/profile/ver"><button type="submit">Подтвердить почту</button></form>{% endif %}
         </div>
 
         <div class="user-info-block">

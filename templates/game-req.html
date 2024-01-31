@@ -3,30 +3,34 @@
 <link rel="stylesheet" href="/static/css/game-req.css">
 {% endblock %}
 {% block body %}
+
     <div class="main">
         {% for category, msg in get_flashed_messages(True)%}
             <div class = {{category}}>{{msg}}</div>
         {% endfor %}
+        <table>
+        <tbody>
         <div class = "blocks">
             <div class="game-block">
                 <h3>Создать игру</h3>
 
-                    <form class="form-send-req" method="post" action="/send-request">
-                        <select name="user2" required>
+                    <form class="form-send-req" method="POST" action="/send-request">
+                        <select class="select" name="user2" required>
                             {% for player in Database.select_opponents(current_user.get_user().id) %}
-                                <option value="{{player[1]}}">{{player[0]}}</option>
+                                <option  value="{{player[1]}}">{{player[0]}}</option>
                             {% endfor %}
                         </select>
-                        <input class="sum-btn" type="submit" value="Отправить вызов">
+                        <input class="acc-btn" type="submit" value="Отправить вызов">
                     </form>
 
             </div>
             {% for game in Database.select_your_game_requests(current_user.get_user().id) %}
 
             <div class="game-block">
-                <p>Оппонент: <span>{{game[3]}}</span>></p>
-                <form method="post" action="dec-req">
-                    <input type="submit" name="first-player" value="Отменить">
+                <p>Оппонент: <span>{{game[3]}}</span></p>
+                <form method="post" action="/update-game/one">
+                    <input type="hidden" name="game_id" value={{game[0]}}>
+                    <input class ="dec-btn" type="submit" name="accept" value="Отменить">
 
                 </form>
             </div>
@@ -40,10 +44,10 @@
             </div>
             {% for game in Database.select_accepted_games(False, current_user.get_user().id) %}
             <div class="game-block">
-                <p>Оппонент: <span>{{game[3]}}</span>></p>
+                <p>Оппонент: <span>{{game[3]}}</span></p>
                 <form method="post" action="dec-req">
                     <input type="submit" name="first-player" value="Отменить">
-                    <input type='hidden' name="game_id" value="{{game[0]}}"/>
+                    <input type='hidden' name="game_id" value={{game[0]}}/>
                 </form>
             </div>
             {% endfor %}
@@ -51,28 +55,29 @@
         <div class="blocks">
         <div class="game-block">
             <h3>Вызовы</h3>
-                <form class="form-all-game">
-                    <input class="acc-btn" type="submit" name="accept-all" value="Принять все">
-                    <input class="dec-btn" type="submit" name="accept-all" value="Отклонить все">
-                    <input type="checkbox" name="accept" value="accept" required>
-                </form>>
+                <form class="form-all-game" action="/update-game/all" method="POST">
+                    <label><input class="acc-btn" type="submit" name="accept-all" value="Принять все">
+                        <input class="dec-btn" type="submit" name="accept-all" value="Отклонить все"></label>
+                    <label><p class="p">Подвердить <input type="checkbox" name="accept" value="accept" required></p></label>
+                </form>
 
 
             </div>
             {% for game in Database.select_game_requests_to_you(current_user.get_user().id) %}
             <div class="game-block">
-                <p>Оппонент: <span>{{game[3]}}</span>></p>
-                <form  class="form-acc-game" action="/accept-game">
-                    <input  class="acc-btn" type="submit" name="accept-all" value="Принять">
-                    <input class="dec-btn" type="submit" name="decline-all" value="Отклонить">
-                    <input type="checkbox" name="accept" value="accept" required>
+                <p>Оппонент: <span>{{game[3]}}</span></p>
+                <form  class="form-acc-game" action="/update-game/one" method="POST">
+                    <label><input  class="acc-btn" type="submit" name="accept" value="Принять">
+                        <input class="dec-btn" type="submit" name="accept" value="Отклонить"></label>
+                        <input type="hidden" name="game_id" value={{game[0]}}>
                 </form>
             </div>
             {% endfor %}
         </div>
 
 
-
+        </tbody>
+    </table>
 
     </div>
 
