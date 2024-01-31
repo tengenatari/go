@@ -18,7 +18,7 @@ class Database:
     @staticmethod
     def select_seasons():
         # Возвращает список всех существующих сезонов
-        return db.session.query(Season).all()
+        return db.session.query(Season).order_by(desc(Season.start_date)).all()
 
     @staticmethod
     def select_active_divisions():
@@ -452,13 +452,35 @@ class Database:
             db.session.add(new_game)
             db.session.commit()
         return result
+    
     @staticmethod
     def update_obj(_class, filter_col, filter_value, update_col, update_value):
         # Устанавливает значения update_value в атрибут update_col
         # во все экземпляры класса _class, удовлетворяющих условию filter_col == filter_value
 
-        db.session.query(_class).filter(filter_col == filter_value).update({update_col: update_value},
-                                                                           synchronize_session=False)
+        db.session.query(_class).filter(filter_col == filter_value).update({update_col: update_value}, synchronize_session = False)
+        db.session.commit()
+
+    @staticmethod
+    def update_all_game_requests_to_you(user_id):
+        # Принимает все запросы на партию, которые нужно принять пользователю user_id.
+
+        request = """
+        UPDATE game
+        SET is_accepted = True
+        WHERE game.id IN (SELECT 
+                game.id
+            FROM game 
+                INNER JOIN player AS s_player 
+                    ON (s_player.id = game.second_player)
+                    AND s_player.user = :user_param
+                    AND NOT game.is_accepted
+                INNER JOIN player AS f_player 
+                    ON (f_player.id = game.first_player)
+                INNER JOIN user AS f_user 
+                    ON f_user.id = f_player.user) 
+        """
+        db.session.execute(text(request), {'user_param': user_id})
         db.session.commit()
 
     @staticmethod
