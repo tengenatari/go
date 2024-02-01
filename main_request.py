@@ -2,7 +2,7 @@ from app import app, db
 from models import Rule, User, Player, Division, Game, Season
 from sqlalchemy import func, case, desc, BinaryExpression
 from sqlalchemy.sql.functions import coalesce
-#from sqlalchemy.sql import table, column
+# from sqlalchemy.sql import table, column
 from sqlalchemy.orm import aliased
 from sqlalchemy import delete, MetaData, select, text
 from UserLogin import UserLogin
@@ -158,38 +158,38 @@ class Database:
         s_User = aliased(User)
 
         result = db.session.query(Game.id,
-                                Game.result,
-                                Division.id,
-                                Division.name,
-                                Game.first_player,
-                                f_User.id,
-                                f_User.name,
-                                Game.second_player,
-                                s_User.id,
-                                s_User.name
-                                ).join(f_Player,
-                                       (f_Player.c.id == Game.first_player)
-                                       & Game.is_accepted,
-                                       isouter=False
-                                       ).join(s_Player,
-                                              (s_Player.c.id == Game.second_player)
-                                              & (s_Player.c.division == f_Player.c.division),
-                                              isouter=False
-                                              ).join(f_User,
-                                                     f_User.id == f_Player.c.user,
-                                                     isouter=False
-                                                     ).join(s_User,
-                                                            (s_User.id == s_Player.c.user)
-                                                            & (True if user_id == 0 else ((f_User.id == user_id) | (
-                                                                    s_User.id == user_id))),
-                                                            isouter=False
-                                                            ).join(Division,
-                                                                   Division.id == f_Player.c.division,
-                                                                   isouter=False
-                                                                   ).filter(
+                                  Game.result,
+                                  Division.id,
+                                  Division.name,
+                                  Game.first_player,
+                                  f_User.id,
+                                  f_User.name,
+                                  Game.second_player,
+                                  s_User.id,
+                                  s_User.name
+                                  ).join(f_Player,
+                                         (f_Player.c.id == Game.first_player)
+                                         & Game.is_accepted,
+                                         isouter=False
+                                         ).join(s_Player,
+                                                (s_Player.c.id == Game.second_player)
+                                                & (s_Player.c.division == f_Player.c.division),
+                                                isouter=False
+                                                ).join(f_User,
+                                                       f_User.id == f_Player.c.user,
+                                                       isouter=False
+                                                       ).join(s_User,
+                                                              (s_User.id == s_Player.c.user)
+                                                              & (True if user_id == 0 else ((f_User.id == user_id) | (
+                                                                      s_User.id == user_id))),
+                                                              isouter=False
+                                                              ).join(Division,
+                                                                     Division.id == f_Player.c.division,
+                                                                     isouter=False
+                                                                     ).filter(
             finished == (Game.result != None)
         )
-        
+
         return result.all()
 
     @staticmethod
@@ -411,7 +411,7 @@ class Database:
             """
         result = db.session.execute(text(request), {'user_param': user_id})
         return result.first()
-    
+
     @staticmethod
     def select_users_in_game(game_id):
         # Возвращает массив из кортежей user.id, которые учавствуют в партии game_id
@@ -428,13 +428,7 @@ class Database:
         """
         result = db.session.execute(text(request), {"game_param": game_id})
         return result.all()
-    
-    @staticmethod
-    def select_from_(_class):
-        # Возвращает список всех экземпляров класса _class
 
-        return db.session.query(_class).all()
-    
     @staticmethod
     def count_pair_games(first_user_id, second_user_id, without_result=False):
         # По айди двух пользователей вывести количество партий в текущем сезоне
@@ -490,13 +484,14 @@ class Database:
             db.session.add(new_game)
             db.session.commit()
         return result
-    
+
     @staticmethod
     def update_obj(_class, filter_col, filter_value, update_col, update_value):
         # Устанавливает значения update_value в атрибут update_col
         # во все экземпляры класса _class, удовлетворяющих условию filter_col == filter_value
 
-        db.session.query(_class).filter(filter_col == filter_value).update({update_col: update_value}, synchronize_session = False)
+        db.session.query(_class).filter(filter_col == filter_value).update({update_col: update_value},
+                                                                           synchronize_session=False)
         db.session.commit()
 
     @staticmethod
@@ -525,8 +520,9 @@ class Database:
     def add_user_in_the_last_division(user):
         # Добавлять пользователя в текущую группу B
         # user - эксемпляр класса User
-        
-        the_last_div = db.session.query(Division).join(Season).filter(Season.is_active).order_by(desc(Division.id)).limit(1).first()
+
+        the_last_div = db.session.query(Division).join(Season).filter(Season.is_active).order_by(
+            desc(Division.id)).limit(1).first()
         the_last_div.players.add(user)
         db.session.commit()
 
@@ -558,4 +554,3 @@ class Database:
         db.session.execute(text(request), {'user_param': user_id})
         db.session.commit()
 
-    

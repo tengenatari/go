@@ -3,11 +3,13 @@
 <link rel="stylesheet" href="/static/css/game-req.css">
 {% endblock %}
 {% block body %}
-
-    <div class="main">
-        {% for category, msg in get_flashed_messages(True)%}
+<div class="main">
+{% for category, msg in get_flashed_messages(True)%}
             <div class = {{category}}>{{msg}}</div>
         {% endfor %}
+</div>>
+    <div class="main">
+
         <table>
         <tbody>
         <div class = "blocks">
@@ -44,10 +46,32 @@
             </div>
             {% for game in Database.select_accepted_games(False, current_user.get_user().id) %}
             <div class="game-block">
-                <p>Оппонент: <span>{{game[3]}}</span></p>
-                <form method="post" action="dec-req">
-                    <input type="submit" name="first-player" value="Отменить">
-                    <input type='hidden' name="game_id" value={{game[0]}}/>
+                <p>Оппонент:
+                    <span>
+                    {% if current_user.get_user().id == game[5] %}
+                        {{game[9]}}
+                    {% else %}
+                        {{game[6]}}
+                    {% endif %}
+                    </span>
+                </p>
+
+
+
+                <form method="post" action="/update-game/update">
+
+                    <input class="dec-btn" type="submit" name="accept" value="Аннулировать">
+                    {% if current_user.get_user().id == game[5] %}
+                        <input type="submit" name="accept-first" value="{{game[6]}}">
+                        <input type="submit" name="accept-second" value="{{game[9]}}">
+                    {% else %}
+                        <input type="submit" name="accept-first" value="{{game[9]}}">
+                        <input type="submit" name="accept-second" value="{{game[6]}}">
+                    {% endif %}
+                    <input class="dec-btn" type="hidden" name="accept" value="None">
+                    <input class="dec-btn" type="hidden" name="accept-first" value="None">
+                    <input class="dec-btn" type="hidden" name="accept-second" value="None">
+                    <input type='hidden' name="game_id" value={{game[0]}}>
                 </form>
             </div>
             {% endfor %}

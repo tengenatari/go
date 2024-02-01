@@ -9,7 +9,7 @@ from app import db, app, login_manager
 from models import *
 from typing import Callable
 from functools import partial
-
+from form_query import *
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -46,8 +46,14 @@ def send_request():
     if request.method == 'POST':
         req = request.form
         user2 = req["user2"]
-        if not(Database.create_game_request(current_user.get_user().id, user2)):
-            flash(message='Вы находитесь в разных группах', category='msg-success')
+        print(user2, Database.select_active_player(current_user.get_user().id)[0])
+        print(Database.select_opponents(current_user.get_user().id))
+        if Database.count_pair_games(current_user.get_user().id, user2, True)[0] >= 1:
+            flash('Нельзя более одного вызова кинуть одному пользователю', category='error-msg')
+        elif Database.count_pair_games(current_user.get_user().id, user2)[0] >= 4:
+            flash('С одним пользователем нельзя сыграть более четырех партий', category='error-msg')
+        elif not(Database.create_game_request(Database.select_active_player(current_user.get_user().id)[0], user2)):
+            flash(message='Вы находитесь в разных группах', category='error-msg ')
     return redirect('/profile/games')
 
 
@@ -59,7 +65,7 @@ def send_request_join_group():
             flash("Вы успешно вступили в группу", category='msg-success')
         else:
             flash("Вы не можете вступить в группу, пока не подтвердите почту", category='error-msg')
-    return redirect('/profile/games')
+    return redirect('/profile')
 
 
 @app.route('/update-game/<string:query>', methods=['GET', 'POST'])
@@ -67,21 +73,9 @@ def send_request_join_group():
 def decline_game_request(query):
     if request.method == 'POST':
         req = request.form
+        select_form(req, query)
 
-        if query == "one":
-            game_id = int(req["game_id"])
-            if req["accept"] == "Принять":
-                Database.update_obj(Game, Game.id, game_id, Game.is_accepted, True)
-            elif req["accept"] == "Отклонить" or req["accept"] == "Отменить":
-                Database.delete_obj(Game, Game.id, game_id)
-
-            else:
-                return redirect("404.html")
     return redirect('/profile/games')
-
-
-
-
 
 
 @app.route('/groups/<int:group_id>')

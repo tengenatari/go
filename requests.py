@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 
 from main_request import *
 
+
 # from sqlalchemy import func, case, desc, BinaryExpression
 # from sqlalchemy.sql.functions import coalesce
 # from sqlalchemy.sql import table, column
@@ -68,8 +69,8 @@ def Insert_test_values():
         db.session.commit()
 
     n = 5
-    for i in range(3*n):
-        text = f"AbaCaba{i+1}"
+    for i in range(3 * n):
+        text = f"AbaCaba{i + 1}"
         user = User(
             name=text,
             password=generate_password_hash(text),
@@ -85,17 +86,16 @@ def Insert_test_values():
     for d in range(3):
         div = g[d]
         for i in range(n):
-            div.players.add(u[i+d*n])
+            div.players.add(u[i + d * n])
         db.session.commit()
-    
+
     g = db.session.query(Division).join(Season).filter(Season.is_active).order_by(Division.id).all()
 
     for d in range(3):
         div = g[d]
         for i in range(n):
-            div.players.add(u[i+d*n])
+            div.players.add(u[i + d * n])
         db.session.commit()
-
 
     g = Game(
         is_accepted=True,
@@ -307,12 +307,12 @@ def Insert_test_values():
 
     db.session.commit()
 
+
 def main():
     app.app_context().push()
 
     Insert_test_values()
-    
-    
+
     # q = db.session.query(Game.id, Game.first_player, Game.second_player, Game.result, Game.is_accepted).all()
     # for i in q:
     #     print(i)
@@ -320,9 +320,8 @@ def main():
     q = db.session.query(User.id, User.name, Player.c.id, Player.c.division).join(Player).all()
     for i in q:
         print(i)
-    #print(q)
+    # print(q)
 
-    
 
 if __name__ == "__main__":
     main()
