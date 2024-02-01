@@ -430,6 +430,12 @@ class Database:
         return result.all()
     
     @staticmethod
+    def select_from_(_class):
+        # Возвращает список всех экземпляров класса _class
+
+        return db.session.query(_class).all()
+    
+    @staticmethod
     def count_pair_games(first_user_id, second_user_id, without_result=False):
         # По айди двух пользователей вывести количество партий в текущем сезоне
         # Если параметр without_result=True, то выводит количество партий без результата
