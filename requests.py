@@ -2,6 +2,7 @@ from app import app, db
 from models import Rule, User, Player, Division, Game, Season
 from werkzeug.security import generate_password_hash
 
+from main_request import *
 
 # from sqlalchemy import func, case, desc, BinaryExpression
 # from sqlalchemy.sql.functions import coalesce
@@ -66,26 +67,35 @@ def Insert_test_values():
         db.session.add(new_division)
         db.session.commit()
 
-        g = db.session.query(Division).all()
+    n = 5
+    for i in range(3*n):
+        text = f"AbaCaba{i+1}"
+        user = User(
+            name=text,
+            password=generate_password_hash(text),
+            email=f"{text}@utmn.ru",
+            is_valid=True
+        )
+        db.session.add(user)
+    db.session.commit()
 
-    u = db.session.query(User).all()
+    u = list(db.session.query(User).all())
+    g = db.session.query(Division).join(Season).filter(Season.is_active == False).order_by(Division.id).all()
 
-    for d in g:
-        n = 5
+    for d in range(3):
+        div = g[d]
         for i in range(n):
-            text = f"AbaCaba{i}_d{d.id}"
-            user = User(
-                name=text,
-                password=generate_password_hash(text),
-                email=f"{text}@utmn.ru",
-                is_valid=True
-            )
-            db.session.add(user)
+            div.players.add(u[i+d*n])
         db.session.commit()
-        u = db.session.query(User).filter(User.name.like(f"%d{d.id}%")).all()
-        for i in u:
-            d.players.add(i)
+    
+    g = db.session.query(Division).join(Season).filter(Season.is_active).order_by(Division.id).all()
+
+    for d in range(3):
+        div = g[d]
+        for i in range(n):
+            div.players.add(u[i+d*n])
         db.session.commit()
+
 
     g = Game(
         is_accepted=True,
@@ -183,18 +193,136 @@ def Insert_test_values():
     )
     db.session.add(g)
 
-    db.session.commit()
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=1,
+        second_player=2
+    )
+    db.session.add(g)
 
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=2,
+        second_player=3
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=3,
+        second_player=4
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=2,
+        second_player=1
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=27,
+        second_player=28
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=False,
+        first_player=27,
+        second_player=29
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=29,
+        second_player=27
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=29,
+        second_player=26
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=29,
+        second_player=26
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=29,
+        second_player=28
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=29,
+        second_player=28
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=29,
+        second_player=28
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=29,
+        second_player=28
+    )
+    db.session.add(g)
+
+    g = Game(
+        is_accepted=True,
+        result=True,
+        first_player=29,
+        second_player=30
+    )
+    db.session.add(g)
+
+    db.session.commit()
 
 def main():
     app.app_context().push()
 
     Insert_test_values()
+    
+    
+    # q = db.session.query(Game.id, Game.first_player, Game.second_player, Game.result, Game.is_accepted).all()
+    # for i in q:
+    #     print(i)
 
     q = db.session.query(User.id, User.name, Player.c.id, Player.c.division).join(Player).all()
     for i in q:
         print(i)
+    #print(q)
 
+    
 
 if __name__ == "__main__":
     main()
