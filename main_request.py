@@ -514,6 +514,15 @@ class Database:
         db.session.commit()
 
     @staticmethod
+    def add_user_in_the_last_division(user):
+        # Добавлять пользователя в текущую группу B
+        # user - эксемпляр класса User
+        
+        the_last_div = db.session.query(Division).join(Season).filter(Season.is_active).order_by(desc(Division.id)).limit(1).first()
+        the_last_div.players.add(user)
+        db.session.commit()
+
+    @staticmethod
     def delete_obj(_class, filter_col, filter_value):
         # Удаляет все экземпляры класса _class, в которых filter_col == filter_value
 
