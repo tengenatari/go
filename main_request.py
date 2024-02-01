@@ -157,7 +157,7 @@ class Database:
         f_User = aliased(User)
         s_User = aliased(User)
 
-        return db.session.query(Game.id,
+        result = db.session.query(Game.id,
                                 Game.result,
                                 Division.id,
                                 Division.name,
@@ -187,8 +187,10 @@ class Database:
                                                                    Division.id == f_Player.c.division,
                                                                    isouter=False
                                                                    ).filter(
-            finished == (Game.result is not None)
-        ).all()
+            finished == (Game.result != None)
+        )
+        
+        return result.all()
 
     @staticmethod
     def select_game_requests_to_you(user_id):
