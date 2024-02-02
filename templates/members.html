@@ -17,10 +17,10 @@
         {% for member in members %}
         <tr>
             <td class="member-info">{{member[1]}}</td>
-            <td class="member-info">{{member[4]}} : {{ member[5]}}</td>
+            <td class="member-info">{{member[4]}} {{" "}}: {{" "}}{{ member[5]}}</td>
             <td class="member-info">{{member[6]}} : {{ member[7]}}</td>
             <td class="member-info"><p class = {{member[3]}}><span>{{member[3]}}</span></p></td>
-            <td class="member-info">{{member[8]}}</td>
+            <td class="member-info">{{"%0.1f" % member[8]}}</td>
         </tr>
         {% endfor %}
     <tbody>

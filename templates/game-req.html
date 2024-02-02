@@ -62,11 +62,11 @@
 
                     <input class="dec-btn" type="submit" name="accept" value="Аннулировать">
                     {% if current_user.get_user().id == game[5] %}
-                        <input type="submit" name="accept-first" value="{{game[6]}}">
-                        <input type="submit" name="accept-second" value="{{game[9]}}">
+                        <input class="user-btn" type="submit" name="accept-first" value="{{game[6]}}">
+                        <input class="user-btn" type="submit" name="accept-second" value="{{game[9]}}">
                     {% else %}
-                        <input type="submit" name="accept-first" value="{{game[9]}}">
-                        <input type="submit" name="accept-second" value="{{game[6]}}">
+                        <input class="user-btn"  type="submit" name="accept-first" value="{{game[9]}}">
+                        <input class="user-btn"  type="submit" name="accept-second" value="{{game[6]}}">
                     {% endif %}
                     <input class="dec-btn" type="hidden" name="accept" value="None">
                     <input class="dec-btn" type="hidden" name="accept-first" value="None">

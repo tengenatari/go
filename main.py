@@ -48,9 +48,10 @@ def send_request():
         user2 = req["user2"]
         print(user2, Database.select_active_player(current_user.get_user().id)[0])
         print(Database.select_opponents(current_user.get_user().id))
-        if Database.count_pair_games(current_user.get_user().id, user2, True)[0] >= 1:
+        if Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2,
+                                     True)[0] >= 1:
             flash('Нельзя более одного вызова кинуть одному пользователю', category='error-msg')
-        elif Database.count_pair_games(current_user.get_user().id, user2)[0] >= 4:
+        elif Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2)[0] >= 4:
             flash('С одним пользователем нельзя сыграть более четырех партий', category='error-msg')
         elif not(Database.create_game_request(Database.select_active_player(current_user.get_user().id)[0], user2)):
             flash(message='Вы находитесь в разных группах', category='error-msg ')

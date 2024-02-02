@@ -548,4 +548,3 @@ class Database:
         """
         db.session.execute(text(request), {'user_param': user_id})
         db.session.commit()
-
