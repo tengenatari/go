@@ -69,7 +69,8 @@ class Database:
             INNER JOIN Season 
                 ON Season.id = "Division".season 
             LEFT OUTER JOIN game 
-                ON Game.is_accepted = 1 
+                ON Game.is_accepted
+                AND Game.result IS NOT NULL
                 AND (Game.first_player = "Player".id OR Game.second_player = "Player".id) 
         """
         db.session.execute(text(request), {'user_id_param': user_id})
