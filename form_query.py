@@ -66,6 +66,7 @@ def form_update(req):
     elif req['accept-first'] != "None":
 
         Database.update_obj(Game, Game.id, game_id, Game.result, True)
+        print(game_id)
         return True
 
     elif req['accept-second'] != "None":

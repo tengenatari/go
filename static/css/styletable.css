@@ -15,7 +15,8 @@
   justify-content: center;
   align-items: center;
   flex-wrap: nowrap;
-  border: 2px solid #42aaff;
+  border: 1px solid #42aaff;
+
   border-radius: 10px;
   height: 120px;
   width: 100%;
@@ -26,12 +27,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: nowrap;
-  border: 2px solid #ddd;
+  border: 1px solid #ddd;
   border-radius: 10%;
   padding: 10px 10px;
-  width: 100px;
-  height: 100px;
+  flex-basis: 100%;
+  min-width: 150px;
+  min-height: 100px;
   text-decoration: none;
   color: #ddd;
   margin-left: 10px;

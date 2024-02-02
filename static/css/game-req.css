@@ -74,3 +74,15 @@
 .p {
     margin-top: 10px;
 }
+.user-btn{
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: 2px solid #42aaff;
+    background-color: #292b2e;
+    border-radius: 10px;
+    color: #ddd;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.user-btn:hover{
+    border-color: #ddd;
+}

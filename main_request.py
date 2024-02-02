@@ -548,6 +548,7 @@ class Database:
         """
         db.session.execute(text(request), {'user_param': user_id})
         db.session.commit()
+<<<<<<< HEAD
 
     @staticmethod
     def create_new_season(new_season_name, division_data, max_games_value=10, switch_num=1):
@@ -665,3 +666,5 @@ class Database:
         except:
             db.session.rollback()
             return False
+=======
+>>>>>>> aec2460f8e18d40584301d9d873fc62190650119
