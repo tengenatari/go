@@ -431,32 +431,25 @@ class Database:
         return result.all()
 
     @staticmethod
-    def count_pair_games(first_user_id, second_user_id, without_result=False):
-        # По айди двух пользователей вывести количество партий в текущем сезоне
+    def count_pair_games(first_player_id, second_player_id, without_result=False):
+        # По айди двух игроков вывести количество партий
         # Если параметр without_result=True, то выводит количество партий без результата
 
         request = """
         SELECT
-            COUNT(game.id)/2
+            COUNT(game.id)
         FROM game
             INNER JOIN player AS f_player
-                ON f_player.user in (:f_user_param, :s_user_param)
+                ON f_player.id = :f_player_param
                 AND f_player.id in (game.first_player, game.second_player)
             INNER JOIN player AS s_player
-                ON s_player.user in (:f_user_param, :s_user_param)
+                ON s_player.id = :s_player_param
                 AND s_player.id in (game.first_player, game.second_player)
-                AND s_player.user != f_player.user
-            INNER JOIN division
-                ON f_player.division = division.id
-                AND s_player.division = division.id
-            INNER JOIN season
-                ON season.id = division.season
-                AND season.is_active
         WHERE
             TRUE IN (game.result IS NULL, NOT :result_param)
         """
-        result = db.session.execute(text(request), {"f_user_param": first_user_id,
-                                                    "s_user_param": second_user_id,
+        result = db.session.execute(text(request), {"f_player_param": first_player_id,
+                                                    "s_player_param": second_player_id,
                                                     "result_param": without_result})
         return result.first()
 
