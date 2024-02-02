@@ -407,6 +407,7 @@ class Database:
                     ON Division.id = Player.division 
                 INNER JOIN Season 
                     ON Season.id = Division.season 
+                    AND Season.is_active
             LIMIT 1
             """
         result = db.session.execute(text(request), {'user_param': user_id})
