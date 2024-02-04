@@ -17,7 +17,7 @@ Table tr{
   flex-wrap: nowrap;
 
   border-radius: 10px;
-  height: 120px;
+  height: 50px;
   width: 100%;
   margin-top: 4px;
 }
@@ -31,11 +31,11 @@ Table td{
   border-radius: 10px;
   padding: 10px 10px;
   width: 200px;
-  height: 100px;
+  height: 50px;
   text-decoration: none;
   color: #ddd;
-  margin-right: 2px;
-  margin-left: 2px;
+  margin-right: 5px;
+  margin-left: 5px;
 }
 .main {
   display: flex;
@@ -58,4 +58,14 @@ Table td{
 }
 .game-info{
   border: 1px solid #b8b8b8;
+}
+
+.S{
+    color: gold;
+}
+.A{
+  color: silver;
+}
+.B{
+  color: coral;
 }

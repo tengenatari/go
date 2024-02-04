@@ -1,5 +1,5 @@
 from math import sqrt
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, request, flash, redirect, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from UserLogin import UserLogin
@@ -40,22 +40,21 @@ def profile_games():
     return render_template('game-req.html', Database=Database)
 
 
-@app.route('/send-request', methods=['GET', 'POST'])
+@app.route('/send-request', methods=['POST'])
 @login_required
 def send_request():
-    if request.method == 'POST':
-        req = request.form
-        user2 = req["user2"]
-        print(user2, Database.select_active_player(current_user.get_user().id)[0])
-        print(Database.select_opponents(current_user.get_user().id))
-        if Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2,
-                                     True)[0] >= 1:
-            flash('Нельзя более одного вызова кинуть одному пользователю', category='error-msg')
-        elif Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2)[0] >= 4:
-            flash('С одним пользователем нельзя сыграть более четырех партий', category='error-msg')
-        elif not(Database.create_game_request(Database.select_active_player(current_user.get_user().id)[0], user2)):
-            flash(message='Вы находитесь в разных группах', category='error-msg ')
-    return redirect('/profile/games')
+
+    req = request.form
+    user2 = req["user2"]
+
+    if Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2,
+                                 True)[0] >= 1:
+        flash('Нельзя более одного вызова кинуть одному пользователю', category='error-msg')
+    elif Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2)[0] >= 4:
+        flash('С одним пользователем нельзя сыграть более четырех партий', category='error-msg')
+    elif not(game_id := Database.create_game_request(Database.select_active_player(current_user.get_user().id)[0], user2)):
+        flash(message='Вы находитесь в разных группах', category='error-msg ')
+    return render_template('game-block.html', opponent=req["opponent"], game_id=game_id )
 
 
 @app.route('/profile/join/group', methods=['GET', 'POST'])
@@ -69,12 +68,12 @@ def send_request_join_group():
     return redirect('/profile')
 
 
-@app.route('/update-game/<string:query>', methods=['GET', 'POST'])
+@app.route('/update-game/<string:query>', methods=['POST'])
 @login_required
 def decline_game_request(query):
-    if request.method == 'POST':
-        req = request.form
-        select_form(req, query)
+
+    req = request.form
+    select_form(req, query)
 
     return redirect('/profile/games')
 

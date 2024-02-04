@@ -2,7 +2,7 @@ from models import *
 from main_request import Database
 from flask import flash
 from flask_login import current_user
-
+from app import *
 
 def check_number(num):
 
@@ -23,16 +23,9 @@ def form_one(req):
 
     game_id = req["game_id"]
     if not(check_number(game_id)):
-        flash(message="Что-то пошло не так", category="error-msg")
         return False
-    if req["accept"] == "Принять":
-        Database.update_obj(Game, Game.id, game_id, Game.is_accepted, True)
-        return True
-    elif req["accept"] == "Отклонить" or req["accept"] == "Отменить":
-        Database.delete_obj(Game, Game.id, game_id)
-        return True
-
-    return False
+    Database.update_obj(Game, Game.id, game_id, Game.is_accepted, True)
+    return True
 
 
 def form_all(req):
@@ -58,32 +51,33 @@ def form_update(req):
         return False
     if not(check_user(current_user.get_user().id, game_id)):
         return False
-    print(req)
-    if req['accept'] != "None":
 
-        Database.delete_obj(Game, Game.id, game_id)
-        return True
-    elif req['accept-first'] != "None":
+    if (req["winner"] == '1') or (req["winner"] == '0'):
 
-        Database.update_obj(Game, Game.id, game_id, Game.result, True)
-        print(game_id)
-        return True
-
-    elif req['accept-second'] != "None":
-
-        Database.update_obj(Game, Game.id, game_id, Game.result, False)
+        Database.update_obj(Game, Game.id, game_id, Game.result, bool(int(req["winner"])))
         return True
 
     flash(message="Что-то пошло не та1к", category="error-msg")
     return False
 
 
-def select_form(req, query):
+def form_delete(req):
+    game_id = req["game_id"]
+    if not (check_number(game_id)):
+        return False
+    Database.delete_obj(Game, Game.id, game_id)
+    return True
 
+
+def select_form(req, query):
+    print(req)
     if query == "one":
         return form_one(req)
     elif query == "all":
         return form_all(req)
+    elif query == "delete":
+        return form_delete(req)
+
     elif query == "update":
         return form_update(req)
 

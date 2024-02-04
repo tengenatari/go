@@ -27,12 +27,12 @@
              {% if ((counter + 1)%count)==1 %}
               <td class="self-to-other">{{matrix[counter][2]}}</td>
              {% endif %}
-            <td class={{matrix[counter][0]}}>{{matrix[counter][6]}}:{{matrix[counter][5]}}</td>
+               <td class={{matrix[counter][0]}}><p>{{matrix[counter][6]}}{{" "}}: {{" "}}{{matrix[counter][5]}}</p></td>
 
             {% if ((counter + 1)%count)==0 %}
               <td class="self-to-other">{{"%0.1f" % matrix[counter][9]}}</td>
               <td class="self-to-other">{{matrix[counter][8]}}{{" "}}: {{" "}}{{matrix[counter][7]}}</td>
-              <td class="self-to-other">{{matrix[counter][10]}}</td>
+              <td class="self-to-other">{{"%0.1f" % matrix[counter][10]}}</td>
                   </tr>
                   {% if counter + 1!=(count*count) %}
                   <tr>

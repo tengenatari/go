@@ -9,18 +9,18 @@
     <Table>
         <tr>
             <td class="header">Группа</td>
-            <td class="header">Игрок 1</td>
+            <td class="header">阴</td>
             <td class="header">Результат партии</td>
-            <td class="header">Игрок 2</td>
+            <td class="header"> 阳</td>
         </tr>
     {% for game in Database.select_accepted_games() %}
         <tr>
-            <td class="game-info">{{game[3]}}</td>
+            <td class="game-info"><p class="{{game[3]}}">{{game[3]}}</p></td>
             <td class="game-info">{{game[6]}}</td>
             <td class="game-info">{% if game[1] %}
-                    1:0
+                    1 : 0
                 {% else %}
-                    0:1
+                    0 : 1
                 {% endif %}
 
             </td>

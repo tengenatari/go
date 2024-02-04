@@ -6,18 +6,17 @@ class UserLogin():
         self.__user = user
         return self
 
-
-    def is_authenticated(self):
+    @staticmethod
+    def is_authenticated():
         return True
 
-
-    def is_active(self):
+    @staticmethod
+    def is_active():
         return True
 
-
-    def is_anonymous(self):
+    @staticmethod
+    def is_anonymous():
         return False
-
 
     def get_id(self):
         return str(self.__user.id)
@@ -25,4 +24,5 @@ class UserLogin():
     def get_user(self):
         return self.__user
 
-
+    def is_admin(self):
+        return self.__user.rule.id == 999

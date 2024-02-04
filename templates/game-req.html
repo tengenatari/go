@@ -1,6 +1,9 @@
 {% extends 'main.html' %}
 {% block style %}
 <link rel="stylesheet" href="/static/css/game-req.css">
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/static/js/ajax.js"></script>
 {% endblock %}
 {% block body %}
 <div class="main">
@@ -12,23 +15,23 @@
 
         <table>
         <tbody>
-        <div class = "blocks">
+        <div class = "blocks" id="first-block">
             <div class="game-block">
                 <h3>Создать игру</h3>
 
                     <form class="form-send-req" method="POST" action="/send-request">
-                        <select class="select" name="user2" required>
+                        <select class="select" name="user2" id="select-user"required>
                             {% for player in Database.select_opponents(current_user.get_user().id) %}
-                                <option  value="{{player[1]}}">{{player[0]}}</option>
+                                <option id="{{player[1]}}" value="{{player[1]}}">{{player[0]}}</option>
                             {% endfor %}
                         </select>
-                        <input class="acc-btn" type="submit" value="Отправить вызов">
-                    </form>
 
+                    </form>
+                    <button class="acc-btn" id="Send-req-Button" value="Отправить вызов">Отправить вызов</button>
             </div>
             {% for game in Database.select_your_game_requests(current_user.get_user().id) %}
 
-            <div class="game-block">
+            <div class="game-block" id="game-block{{game[0]}}">
                 <p>Оппонент: <span>{{game[3]}}</span></p>
                 <form method="post" action="/update-game/one">
                     <input type="hidden" name="game_id" value={{game[0]}}>
@@ -39,13 +42,13 @@
             {% endfor %}
         </div>
 
-        <div class = "blocks">
+        <div class = "blocks" id="second-block">
             <div class="game-block">
                 <h3>Текущие игры</h3>
 
             </div>
             {% for game in Database.select_accepted_games(False, current_user.get_user().id) %}
-            <div class="game-block">
+            <div class="game-block" id="game-block{{game[0]}}">
                 <p>Оппонент:
                     <span>
                     {% if current_user.get_user().id == game[5] %}
@@ -56,27 +59,13 @@
                     </span>
                 </p>
 
-
-
-                <form method="post" action="/update-game/update">
-
-                    <input class="dec-btn" type="submit" name="accept" value="Аннулировать">
-                    {% if current_user.get_user().id == game[5] %}
-                        <input class="user-btn" type="submit" name="accept-first" value="{{game[6]}}">
-                        <input class="user-btn" type="submit" name="accept-second" value="{{game[9]}}">
-                    {% else %}
-                        <input class="user-btn"  type="submit" name="accept-first" value="{{game[9]}}">
-                        <input class="user-btn"  type="submit" name="accept-second" value="{{game[6]}}">
-                    {% endif %}
-                    <input class="dec-btn" type="hidden" name="accept" value="None">
-                    <input class="dec-btn" type="hidden" name="accept-first" value="None">
-                    <input class="dec-btn" type="hidden" name="accept-second" value="None">
-                    <input type='hidden' name="game_id" value={{game[0]}}>
-                </form>
+                <button class = "dec-btn" game_id="{{game[0]}}">Аннулировать</button>
+                <button  class = "user-btn" game_id="{{game[0]}}" winner=1>{{game[6]}}</button>
+                <button  class = "user-btn" game_id="{{game[0]}}" winner=0>{{game[9]}}</button>
             </div>
             {% endfor %}
         </div>
-        <div class="blocks">
+        <div class="blocks" id="third-block">
         <div class="game-block">
             <h3>Вызовы</h3>
                 <form class="form-all-game" action="/update-game/all" method="POST">
@@ -88,13 +77,10 @@
 
             </div>
             {% for game in Database.select_game_requests_to_you(current_user.get_user().id) %}
-            <div class="game-block">
+            <div class="game-block" id="game-block{{game[0]}}">
                 <p>Оппонент: <span>{{game[3]}}</span></p>
-                <form  class="form-acc-game" action="/update-game/one" method="POST">
-                    <label><input  class="acc-btn" type="submit" name="accept" value="Принять">
-                        <input class="dec-btn" type="submit" name="accept" value="Отклонить"></label>
-                        <input type="hidden" name="game_id" value={{game[0]}}>
-                </form>
+                <label><button class="acc-btn"  name="accept" game_id = "{{game[0]}}">Принять</button>
+                    <button class="dec-btn"  name="accept" game_id = "{{game[0]}}">Отклонить</button></label>
             </div>
             {% endfor %}
         </div>
