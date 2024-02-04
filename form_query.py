@@ -19,20 +19,11 @@ def check_user(user_id, game_id):
     flash(message='Вы не можете отправить результат игры, участником которой не являетесь', category='error-msg')
     return False
 
-def form_one(req):
 
-    game_id = req["game_id"]
-    if not(check_number(game_id)):
-        return False
-    Database.update_obj(Game, Game.id, game_id, Game.is_accepted, True)
-    return True
 
 
 def form_all(req):
-    game_id = req["game_id"]
-    if not(check_number(game_id)):
-        flash(message="Что-то пошло не так", category="error-msg")
-        return False
+
     if req['accept-all'] == "Принять все":
         Database.update_all_game_requests_to_you(current_user.get_user().id)
         return True
@@ -46,9 +37,7 @@ def form_all(req):
 
 def form_update(req):
     game_id = req["game_id"]
-    if not(check_number(game_id)):
-        flash(message="Что-то пошло не так", category="error-msg")
-        return False
+
     if not(check_user(current_user.get_user().id, game_id)):
         return False
 
@@ -62,25 +51,33 @@ def form_update(req):
 
 
 def form_delete(req):
-    game_id = req["game_id"]
-    if not (check_number(game_id)):
-        return False
+    game_id = req['game_id']
     Database.delete_obj(Game, Game.id, game_id)
     return True
 
 
+def form_accept(req):
+    game_id = req['game_id']
+    Database.update_obj(Game, Game.id, game_id, Game.is_accepted, True)
+
 def select_form(req, query):
-    print(req)
-    if query == "one":
-        return form_one(req)
-    elif query == "all":
+    if query == "all":
         return form_all(req)
-    elif query == "delete":
+
+    if not (check_number(req['game_id'])):
+        return False
+
+    if not(check_user(current_user.get_user().id, req['game_id'])):
+        return False
+
+    if query == "delete":
         return form_delete(req)
 
     elif query == "update":
         return form_update(req)
 
+    elif query == "accept":
+        return form_accept(req)
     return False
 
 

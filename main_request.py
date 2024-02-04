@@ -587,7 +587,7 @@ class Database:
                 ex = f"Invalid number of players in new divisions. Curret: {current_num}. Old: {old_num}."
                 print(ex)
                 return ex
-            
+
             # 2:
             request = """
                 DELETE FROM game
@@ -620,17 +620,17 @@ class Database:
 
             # 4:
             db.session.query(Season).filter(Season.is_active).update({Season.is_active: False},
-                                                                                synchronize_session=False)
+                                                                     synchronize_session=False)
 
             # 5:
             new_season = Season(
-                name = new_season_name
+                name=new_season_name
             )
             db.session.add(new_season)
 
             divs = []
             for d in division_data:
-                div = Division(name = d[0], season=new_season.id)
+                div = Division(name=d[0], season=new_season.id)
                 divs.append(div)
                 db.session.add(div)
 
@@ -642,7 +642,8 @@ class Database:
                 summ += count_players_in_old_div[i]
                 if count_players_in_old_div[i] == division_data[i][1]:
                     for j in range(0, switch_num):
-                        ladder_of_users[summ - j], ladder_of_users[summ + j + 1] = ladder_of_users[summ + j + 1], ladder_of_users[summ - j]
+                        ladder_of_users[summ - j], ladder_of_users[summ + j + 1] = ladder_of_users[summ + j + 1], \
+                        ladder_of_users[summ - j]
 
             # 7:
             for d in range(len(division_data)):

@@ -13,7 +13,9 @@ $(document).ready(function () {
         req.done(function(data){
             let div = document.createElement('div');
             div.className = 'game-block'
-            div.innerHTML = data
+            div.id = 'game-block' + data['game_id']
+
+            div.innerHTML = data['page']
             document.getElementById('first-block').append(div)
         });
 
@@ -30,7 +32,8 @@ $(document).ready(function () {
                 data : {game_id: game_id, winner: winner}
             });
         req.done(function (){
-            document.getElementById('game-block'+game_id).style.display = 'None';
+            var element = document.getElementById('game-block'+game_id)
+            element.parentNode.removeChild(element)
         });
 
     });
@@ -44,7 +47,9 @@ $(document).ready(function () {
         });
 
         req.done(function() {
-            document.getElementById('game-block'+game_id).style.display = 'None';
+
+            var element = document.getElementById('game-block'+game_id)
+            element.parentNode.removeChild(element)
         });
     });
     $(document).on('click', ".acc-btn", function(){
@@ -52,7 +57,12 @@ $(document).ready(function () {
         req = $.ajax({
             url: '/update-game/accept',
             type: 'POST',
-            data: {}
+            data: {game_id : game_id}
+        });
+        req.done(function() {
+
+            var element = document.getElementById('game-block'+game_id)
+            element.parentNode.removeChild(element)
         });
     });
 

@@ -10,7 +10,7 @@
 {% for category, msg in get_flashed_messages(True)%}
             <div class = {{category}}>{{msg}}</div>
         {% endfor %}
-</div>>
+</div>
     <div class="main">
 
         <table>
@@ -33,11 +33,8 @@
 
             <div class="game-block" id="game-block{{game[0]}}">
                 <p>Оппонент: <span>{{game[3]}}</span></p>
-                <form method="post" action="/update-game/one">
-                    <input type="hidden" name="game_id" value={{game[0]}}>
-                    <input class ="dec-btn" type="submit" name="accept" value="Отменить">
 
-                </form>
+                <button class ="dec-btn" game_id="{{game[0]}}">Отменить</button>
             </div>
             {% endfor %}
         </div>
