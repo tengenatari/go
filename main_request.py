@@ -456,7 +456,7 @@ class Database:
 
     @staticmethod
     def create_game_request(f_Player_id, s_Player_id):
-        # Запрос который по айди игроков, создаст партию, если они в одной группе, при успехе выдаст True, при ошибке False
+        # Запрос который по айди игроков, создаст партию, если они в одной группе, при успехе выдаст game.id, при ошибке 0
         request = """
             SELECT
                 f_player.division = s_player.division, 
@@ -478,7 +478,8 @@ class Database:
             )
             db.session.add(new_game)
             db.session.commit()
-        return result
+            return new_game.id
+        return 0
 
     @staticmethod
     def update_obj(_class, filter_col, filter_value, update_col, update_value):
@@ -548,3 +549,111 @@ class Database:
         """
         db.session.execute(text(request), {'user_param': user_id})
         db.session.commit()
+
+    @staticmethod
+    def create_new_season(new_season_name, division_data, max_games_value=10, switch_num=1):
+        # процесс создания сезона:
+        # 1) Создаётся выборка count_players_in_old_div[ ] - количество игроков в старых дивизионов
+        # 2) Удаляются все партии, где game.result == None
+        # 3) Создаётся выборка пользователей ladder_of_users[ ]. Выборка сортируется по текущему дивизиону, внутри дивизиона по очкам
+        # 4) Cтарый сезон помечается season.is_active = false
+        # 5) Создаётся новый сезон с именем name, n дивизионами, k[0 <= i < n] количеством участников дивизионов и именами дивизионов
+        #    Двизионы создаются в порядке убывания престижа. (Иными словами первый создаётся дивизион S)
+        # 6) Если old_k[i] - k[i] == 0, то первые j человек на стыке дивизионов меняются местами. Производим перестановку для каждого стыка дивизионов.
+        # 7) В дивизион d[i] берутся первые k[i] человек из выборки ladder_of_users.
+
+        try:
+            # 1:
+            request = """
+                SELECT
+                    COUNT(player.id)
+                FROM division
+                    INNER JOIN season
+                        ON season.id = division.season
+                        AND season.is_active
+                    INNER JOIN player
+                        ON player.division = division.id
+                GROUP BY
+                    division.id
+                ORDER BY
+                    division.id
+                """
+            result = db.session.execute(text(request))
+            count_players_in_old_div = [i[0] for i in result.all()]
+
+            current_num = sum([i[1] for i in division_data])
+            old_num = sum(count_players_in_old_div)
+            if current_num != old_num:
+                ex = f"Invalid number of players in new divisions. Curret: {current_num}. Old: {old_num}."
+                print(ex)
+                return ex
+            
+            # 2:
+            request = """
+                DELETE FROM game
+                WHERE game.result IS NULL
+                """
+            db.session.execute(text(request))
+
+            # 3:
+            request = """
+                SELECT
+                    player.user,
+                    SUM(IFNULL((game.result = (game.first_player = player.id)), FALSE)
+                        )/(MAX(COUNT(game.id), :max_games_value) + 0.0) * 100 AS score
+                FROM player
+                    INNER JOIN division
+                        ON player.division = division.id
+                    INNER JOIN season
+                        ON season.id = division.season
+                        AND season.is_active
+                    LEFT JOIN game
+                        ON player.id IN (game.first_player, game.second_player)
+                GROUP BY
+                    player.id
+                ORDER BY
+                    division.id,
+                    score DESC
+                """
+            result = db.session.execute(text(request), {"max_games_value": max_games_value})
+            ladder_of_users = [i[0] for i in result.all()]
+
+            # 4:
+            db.session.query(Season).filter(Season.is_active).update({Season.is_active: False},
+                                                                                synchronize_session=False)
+
+            # 5:
+            new_season = Season(
+                name = new_season_name
+            )
+            db.session.add(new_season)
+
+            divs = []
+            for d in division_data:
+                div = Division(name = d[0], season=new_season.id)
+                divs.append(div)
+                db.session.add(div)
+
+            # 6:
+            n = min(len(count_players_in_old_div), len(division_data)) - 1
+            summ = -1
+
+            for i in range(n):
+                summ += count_players_in_old_div[i]
+                if count_players_in_old_div[i] == division_data[i][1]:
+                    for j in range(0, switch_num):
+                        ladder_of_users[summ - j], ladder_of_users[summ + j + 1] = ladder_of_users[summ + j + 1], ladder_of_users[summ - j]
+
+            # 7:
+            for d in range(len(division_data)):
+                div = divs[d]
+                for i in range(division_data[d][1]):
+                    user_id = ladder_of_users.pop(0)
+                    user = db.session.query(User).filter(User.id == user_id).first()
+                    div.players.add(user)
+
+            db.session.commit()
+            return True
+        except:
+            db.session.rollback()
+            return False
