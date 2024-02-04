@@ -79,7 +79,7 @@ def decline_game_request(query):
     req = request.form
     select_form(req, query)
 
-    return redirect('/profile/games')
+    return jsonify()
 
 
 @app.route('/groups/<int:group_id>')

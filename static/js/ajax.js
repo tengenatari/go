@@ -48,7 +48,7 @@ $(document).ready(function () {
 
         req.done(function() {
 
-            var element = document.getElementById('game-block'+game_id)
+            let element = document.getElementById('game-block'+game_id)
             element.parentNode.removeChild(element)
         });
     });
@@ -61,7 +61,7 @@ $(document).ready(function () {
         });
         req.done(function() {
 
-            var element = document.getElementById('game-block'+game_id)
+            let element = document.getElementById('game-block'+game_id)
             element.parentNode.removeChild(element)
         });
     });
