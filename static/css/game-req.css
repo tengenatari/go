@@ -5,6 +5,14 @@
     flex-direction: row;
     padding: 30px;
 }
+.message-cont{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 100px;
+
+}
 
  .game-block {
     border: 2px solid #42aaff;
@@ -101,4 +109,17 @@
 }
 .user-btn:hover{
     border-color: #ddd;
+}
+
+.error-msg{
+    width: 30%;
+    height: 25px;
+    border: 2px solid #FF4040;
+    background: rgba(255,0,0, 0.2);
+    border-radius: 10px;
+    justify-content: center;
+    display: flex ;
+    align-items: center;
+
+    color: #ddd;
 }

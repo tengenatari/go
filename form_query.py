@@ -9,7 +9,6 @@ def check_number(num):
 
     if all([nums.isdigit() for nums in num]):
         return True
-    flash(message="Что-то пошло не так", category="error-msg")
     return False
 
 
@@ -18,7 +17,6 @@ def check_user(user_id, game_id):
     print(users)
     if user_id == users[0][0] or user_id == users[1][0]:
         return True
-    flash(message='Вы не можете отправить результат игры, участником которой не являетесь', category='error-msg')
     return False
 
 
@@ -29,9 +27,9 @@ def form_all(req):
     elif req['accept-all'] == "Отклонить все":
         Database.delete_all_game_requests_to_you(current_user.get_user().id)
         return jsonify({'success': True})
+    message = 'Партии можно либо отклонить, либо принять'
 
-    flash("Что-то пошло не так", "error-msg")
-    return jsonify({'success': False})
+    return jsonify({'success': False, 'message': message, 'id': 'error-msg-1'})
 
 
 def form_update(req):
@@ -41,9 +39,8 @@ def form_update(req):
 
         Database.update_obj(Game, Game.id, game_id, Game.result, bool(int(req["winner"])))
         return jsonify({'success': True})
-
-    flash(message="Что-то пошло не та1к", category="error-msg")
-    return jsonify({'success': False})
+    message = 'Партия может быть только выигранной или проигранной'
+    return jsonify({'success': False, 'message': message, 'id': 'error-msg-2'})
 
 
 def form_delete(req):
@@ -63,15 +60,17 @@ def form_accept(req):
 
 
 def select_form(req, query):
-    message = ''
+    message = 'Возникла непредвиденная ошибка'
     if query == "all":
         return form_all(req)
 
     if not (check_number(req['game_id'])):
-        return jsonify({'success': False, 'message': message})
+        message = 'Неправильный формат данных'
+        return jsonify({'success': False, 'message': message, 'id': 'error-msg-3'})
 
     if not (check_user(current_user.get_user().id, req['game_id'])):
-        return jsonify({'success': False, 'message': message})
+        message = 'Вы не можете отправлять запросы на чужие партии'
+        return jsonify({'success': False, 'message': message, 'id': 'error-msg-4'})
 
     if query == "delete":
         return form_delete(req)
@@ -81,6 +80,6 @@ def select_form(req, query):
 
     elif query == "accept":
         return form_accept(req)
-    return jsonify({'success': False, 'message': message})
+    return jsonify({'success': False, 'message': message, 'id': 'error-msg-5'})
 
 

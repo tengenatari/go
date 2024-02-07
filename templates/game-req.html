@@ -6,12 +6,13 @@
 <script src="/static/js/ajax.js"></script>
 {% endblock %}
 {% block body %}
-<div class="main">
-{% for category, msg in get_flashed_messages(True)%}
+<div class="message-cont" id="error-block">
+        {% for category, msg in get_flashed_messages(True)%}
             <div class = {{category}}>{{msg}}</div>
         {% endfor %}
 </div>
     <div class="main">
+
 
         <table>
         <tbody>

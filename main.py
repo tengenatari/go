@@ -11,6 +11,7 @@ from typing import Callable
 from functools import partial
 from form_query import *
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return UserLogin().create(User.query.filter(User.id == user_id).first())
@@ -49,17 +50,19 @@ def send_request():
 
     if Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2,
                                  True)[0] >= 1:
-        return jsonify({'success': False})
+        message = 'Вы не можете отправить более одного вызова одному игроку'
+        return jsonify({'success': False, 'message': message, 'id': 'error-msg-6'})
     elif Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2)[0] >= 4:
-
-        return jsonify({'success': False})
+        message = 'Вы не можете сыграть более четырех партий с одним игрокком'
+        return jsonify({'success': False, 'message': message, 'id': 'error-msg-7'})
 
     game_id = Database.create_game_request(Database.select_active_player(current_user.get_user().id)[0], user2)
-    print(game_id)
+
     if (game_id):
         return jsonify({'success': True, 'page': render_template('game-block.html', opponent=req["opponent"], game_id=game_id),
                         'game_id': game_id})
-
+    message = 'Возникла непредвиденная ошибка'
+    return jsonify({'success': False, 'message': message, 'id': 'error-msg-8'})
 
 
 @app.route('/profile/join/group', methods=['GET', 'POST'])
@@ -80,6 +83,11 @@ def decline_game_request(query):
     return select_form(req, query)
 
 
+@app.route('/user/rules/admin-panel')
+@login_required
+def admin_panel():
+
+    return render_template('admin-panel.html')
 
 
 @app.route('/groups/<int:group_id>')

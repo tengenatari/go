@@ -1,3 +1,19 @@
+function error(data){
+    if(document.getElementById(data['id'])){
+
+    }
+    else{
+        let div = document.createElement('div');
+        div.className = 'error-msg'
+        div.innerHTML = data['message']
+        div.id = data['id']
+
+        document.getElementById('error-block').append(div)
+    }
+}
+
+
+
 $(document).ready(function () {
     $(document.getElementById("Send-req-Button")).on('click', function (){
 
@@ -11,6 +27,7 @@ $(document).ready(function () {
             data : {user2 : value, opponent: text}
         })
         req.done(function(data){
+
             if (data['success']){
                 let div = document.createElement('div');
                 div.className = 'game-block'
@@ -20,7 +37,7 @@ $(document).ready(function () {
                 document.getElementById('first-block').append(div)
             }
             else{
-                //добавить вывод сообщения об ошибке
+                error(data)
             }
         });
 
@@ -42,7 +59,7 @@ $(document).ready(function () {
                 element.parentNode.removeChild(element)
             }
             else{
-
+                error(data)
             }
         });
 
@@ -56,13 +73,13 @@ $(document).ready(function () {
 
         });
 
-        req.done(function() {
+        req.done(function(data) {
             if(data['success']){
                 let element = document.getElementById('game-block'+game_id)
                 element.parentNode.removeChild(element)
             }
             else{
-
+                error(data)
             }
         });
     });
@@ -87,7 +104,7 @@ $(document).ready(function () {
                 document.getElementById('second-block').append(div)
             }
             else{
-
+                error(data)
             }
         });
     });
