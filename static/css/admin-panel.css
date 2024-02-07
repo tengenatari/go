@@ -1,0 +1,21 @@
+.main{
+    display: flex;
+    justify-content: center;
+
+    flex-direction: row;
+    padding: 30px;
+}
+.select-menu{
+    width: 50%;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #42aaff;
+    background: #171719;
+    color: #ddd;
+    border-radius: 10px;
+    font-size: 22px;
+    padding: 5px 5px;
+    
+}
+
