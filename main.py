@@ -49,17 +49,18 @@ def send_request():
 
     if Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2,
                                  True)[0] >= 1:
-        flash('Нельзя более одного вызова кинуть одному пользователю', category='error-msg')
-
+        return jsonify({'success': False})
     elif Database.count_pair_games(Database.select_active_player(current_user.get_user().id)[0], user2)[0] >= 4:
-        flash('С одним пользователем нельзя сыграть более четырех партий', category='error-msg')
+
+        return jsonify({'success': False})
+
     game_id = Database.create_game_request(Database.select_active_player(current_user.get_user().id)[0], user2)
+    print(game_id)
     if (game_id):
-        print(game_id)
-        return jsonify({'page': render_template('game-block.html', opponent=req["opponent"], game_id=game_id),
+        return jsonify({'success': True, 'page': render_template('game-block.html', opponent=req["opponent"], game_id=game_id),
                         'game_id': game_id})
 
-    print('smth')
+
 
 @app.route('/profile/join/group', methods=['GET', 'POST'])
 @login_required
@@ -75,11 +76,10 @@ def send_request_join_group():
 @app.route('/update-game/<string:query>', methods=['POST'])
 @login_required
 def decline_game_request(query):
-
     req = request.form
-    select_form(req, query)
+    return select_form(req, query)
 
-    return jsonify()
+
 
 
 @app.route('/groups/<int:group_id>')

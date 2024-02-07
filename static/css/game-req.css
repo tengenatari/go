@@ -52,7 +52,23 @@
     transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
+.btn-acc{
+    padding: 10px 10px;
+
+    border: 2px solid rgba(0, 200, 0, 1);
+    background: rgba(0, 200, 0, 0.2);
+    color: #ddd;
+    border-radius: 10px;
+    margin-top: 5px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
 .acc-btn:hover{
+    border-color: rgba(0, 255,0);
+    background-color: rgba(0, 255,0, 0.2);
+}
+
+.btn-acc:hover{
     border-color: rgba(0, 255,0);
     background-color: rgba(0, 255,0, 0.2);
 }
